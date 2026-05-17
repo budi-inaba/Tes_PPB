@@ -1347,7 +1347,7 @@ if (
             return;
         }
 
-        registeredData = { ...payload, id: result.id, waktu: result.waktu};
+        registeredData = { ...payload, id: result.data?.id, waktu: result.data?.waktu};
         renderReview();
         switchView('review');
         showToast('Pendaftaran berhasil !');
