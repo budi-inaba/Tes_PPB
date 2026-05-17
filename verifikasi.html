@@ -250,3 +250,50 @@
                 icon.setAttribute('data-lucide', 'clock');
                 icon.className = "w-8 h-8 text-amber-500";
                 badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700";
+                badge.textContent = "Menunggu";
+                btnApprove.classList.remove('hidden'); // Tampilkan tombol approve
+            }
+            lucide.createIcons();
+        }
+
+        // ==========================================
+        // FUNGSI APPROVE
+        // ==========================================
+        async function approveData() {
+            if (!confirm("Setujui pendaftaran ini?")) return;
+            const btn = document.getElementById('btn-approve');
+            btn.innerHTML = `<div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div> Memproses...`;
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "approve", id: currentId })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    fetchData(currentId); // Reload data
+                } else {
+                    alert("Gagal: " + result.message);
+                }
+            } catch (err) {
+                alert("Error server");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> <span>SETUJUI PENDAFTARAN</span>`;
+                lucide.createIcons();
+            }
+        }
+
+        function showError(msg) {
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('error-state').classList.remove('hidden');
+            document.getElementById('error-msg').textContent = msg;
+        }
+
+        function triggerConfetti() {
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        }
+    </script>
+</body>
+</html>
