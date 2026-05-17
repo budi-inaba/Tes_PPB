@@ -1969,37 +1969,39 @@ document.addEventListener('DOMContentLoaded', () => {
 // ===============================
 // AUTO MODE VERIFIKASI
 // ===============================
+// ===============================
+// AUTO MODE VERIFIKASI
+// ===============================
 async function cekModeVerifikasi() {
-
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get("id");
-
   if (!id) return; // tidak ada parameter → normal form
-
+  
   switchView('verifikasi');
-
   const loading = document.getElementById('verifikasi-loading');
   const resultBox = document.getElementById('verifikasi-result');
-
+  
   try {
-
     const res = await fetch(
       `${GOOGLE_SCRIPT_URL}?action=getById&id=${id}`
     );
-
-    const data = await res.json();
-
+    const result = await res.json();
+    
+    console.log("Response:", result);
+    
     loading.classList.add('hidden');
     resultBox.classList.remove('hidden');
-
-    if (!data.success) {
+    
+    if (!result.success) {
       tampilkanTidakValid("Data tidak ditemukan");
       return;
     }
-
-    isiDataVerifikasi(data);
-
+    
+    // ✅ PERBAIKAN: Gunakan result.data
+    isiDataVerifikasi(result.data);
+    
   } catch (err) {
+    console.error("Error:", err);
     loading.classList.add('hidden');
     resultBox.classList.remove('hidden');
     tampilkanTidakValid("Gagal menghubungi server");
@@ -2007,21 +2009,22 @@ async function cekModeVerifikasi() {
 }
 
 function isiDataVerifikasi(data) {
-
-  document.getElementById('v-id').textContent = data.id;
-  document.getElementById('v-nama').textContent = data.nama_pemilik;
-  document.getElementById('v-kk').textContent = data.kk;
-  document.getElementById('v-kelurahan').textContent = data.kelurahan;
-  document.getElementById('v-produk').textContent = data.produk;
-  document.getElementById('v-status').textContent = data.status;
-
+  console.log("Data verifikasi:", data);
+  
+  document.getElementById('v-id').textContent = data.id || "—";
+  document.getElementById('v-nama').textContent = data.nama || data.nama_pemilik || "—";
+  document.getElementById('v-kk').textContent = data.kk || "—";
+  document.getElementById('v-kelurahan').textContent = data.kelurahan || "—";
+  document.getElementById('v-produk').textContent = data.produk || "—";
+  document.getElementById('v-status').textContent = data.status || "Menunggu";
+  
   if (data.status === "Disetujui") {
     tampilkanValid();
   } else {
     tampilkanTidakValid("Belum Disetujui");
   }
 }
-
+    
 function tampilkanValid() {
   const icon = document.getElementById('verifikasi-status-icon');
   const text = document.getElementById('verifikasi-status-text');
