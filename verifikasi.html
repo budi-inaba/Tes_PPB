@@ -23,7 +23,7 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* Loader */
+        /* Custom Loader */
         .loader {
             border: 3px solid #f3f3f3;
             border-radius: 50%;
@@ -36,6 +36,13 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .neon-green {
+            background-color: #10b981; /* Emerald 500 */
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+        }
+        .neon-green:hover {
+            background-color: #059669; /* Emerald 600 */
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
@@ -43,14 +50,19 @@
     <!-- CARD CONTAINER -->
     <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden relative fade-in">
         
-        <!-- HEADER GRADIENT -->
+        <!-- HEADER GRADIENT (Blue to Green/Teal like Screenshot) -->
         <div class="bg-gradient-to-r from-blue-600 to-emerald-500 p-6 text-white text-center relative overflow-hidden">
+            <!-- Background decorative circle -->
             <div class="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-white opacity-10 rounded-full"></div>
-            <div class="relative z-10">
+            
+            <div class="relative z-10 flex flex-col items-center">
                 <!-- LOGO -->
-                <div class="bg-white text-blue-600 font-extrabold text-xl px-3 py-1 rounded inline-block mb-2 tracking-wider">
+                <div class="bg-white text-blue-600 font-extrabold text-xl px-3 py-1 rounded inline-block mb-2 tracking-wider shadow-md">
                     RPTRA
+                    <!-- Ganti div di atas dengan <img> jika ingin pakai file logo-rptra.png -->
+                    <!-- <img src="logo-rptra.png" class="h-8" onerror="this.style.display='none'; this.parentElement.innerHTML='RPTRA'"> -->
                 </div>
+                
                 <h1 class="text-lg font-bold">Verifikasi Pendaftaran</h1>
                 <p class="text-xs text-blue-100 mt-1">Program Pangan Bersubsidi</p>
                 <p class="text-[10px] text-blue-200">RPTRA Kenanga Cideng</p>
@@ -68,11 +80,11 @@
             
             <!-- STATUS ICON & TEXT -->
             <div class="text-center mb-6">
-                <div id="status-icon-container" class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-3 bg-gray-100">
-                    <i id="status-icon" data-lucide="clock" class="w-8 h-8 text-gray-400"></i>
+                <div id="status-icon-container" class="w-14 h-14 rounded-full mx-auto flex items-center justify-center mb-3 bg-gray-50">
+                    <i id="status-icon" data-lucide="clock" class="w-8 h-8 text-amber-500"></i>
                 </div>
-                <h2 id="status-text" class="text-lg font-bold uppercase tracking-wide text-gray-400">
-                    Menunggu Verifikasi
+                <h2 id="status-text" class="text-lg font-bold uppercase tracking-wide text-amber-500">
+                    MENUNGGU VERIFIKASI
                 </h2>
             </div>
 
@@ -81,7 +93,7 @@
                 
                 <!-- Waktu -->
                 <div class="flex items-start gap-3">
-                    <i data-lucide="calendar" class="w-4 h-4 text-gray-400 mt-0.5"></i>
+                    <i data-lucide="calendar" class="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0"></i>
                     <div class="flex-1">
                         <p class="text-[10px] text-gray-400 uppercase font-semibold">Waktu Pendaftaran</p>
                         <p id="detail-waktu" class="text-gray-700 font-medium">-</p>
@@ -90,16 +102,16 @@
 
                 <!-- ID -->
                 <div class="flex items-center gap-3">
-                    <i data-lucide="hash" class="w-4 h-4 text-gray-400"></i>
+                    <i data-lucide="hash" class="w-4 h-4 text-gray-400 flex-shrink-0"></i>
                     <div class="flex-1 flex justify-between">
                         <p class="text-[10px] text-gray-400 uppercase font-semibold">ID Registrasi</p>
-                        <p id="detail-id" class="text-blue-600 font-bold font-mono">-</p>
+                        <p id="detail-id" class="text-gray-700 font-mono font-bold">-</p>
                     </div>
                 </div>
 
                 <!-- KK -->
                 <div class="flex items-center gap-3">
-                    <i data-lucide="id-card" class="w-4 h-4 text-gray-400"></i>
+                    <i data-lucide="id-card" class="w-4 h-4 text-gray-400 flex-shrink-0"></i>
                     <div class="flex-1 flex justify-between">
                         <p class="text-[10px] text-gray-400 uppercase font-semibold">No. KK</p>
                         <p id="detail-kk" class="text-gray-700 font-mono">-</p>
@@ -108,7 +120,7 @@
 
                 <!-- Kelurahan -->
                 <div class="flex items-center gap-3">
-                    <i data-lucide="map-pin" class="w-4 h-4 text-gray-400"></i>
+                    <i data-lucide="map-pin" class="w-4 h-4 text-gray-400 flex-shrink-0"></i>
                     <div class="flex-1 flex justify-between">
                         <p class="text-[10px] text-gray-400 uppercase font-semibold">Kelurahan</p>
                         <p id="detail-kelurahan" class="text-gray-700 font-semibold">-</p>
@@ -117,7 +129,7 @@
 
                 <!-- Nama -->
                 <div class="flex items-center gap-3">
-                    <i data-lucide="user" class="w-4 h-4 text-gray-400"></i>
+                    <i data-lucide="user" class="w-4 h-4 text-gray-400 flex-shrink-0"></i>
                     <div class="flex-1 flex justify-between">
                         <p class="text-[10px] text-gray-400 uppercase font-semibold">Nama Pemilik Kartu</p>
                         <p id="detail-nama" class="text-gray-700 font-semibold">-</p>
@@ -126,29 +138,29 @@
 
                 <!-- Kategori -->
                 <div class="flex items-center gap-3">
-                    <i data-lucide="tag" class="w-4 h-4 text-gray-400"></i>
+                    <i data-lucide="tag" class="w-4 h-4 text-gray-400 flex-shrink-0"></i>
                     <div class="flex-1 flex justify-between">
-                        <p class="text-[10px] text-gray-400 uppercase font-semibold">Kategori</p>
-                        <p id="detail-kategori" class="text-pink-600 font-bold">-</p>
+                        <p class="text-[10px] text-gray-400 uppercase font-semibold">Kategori Penerima</p>
+                        <p id="detail-kategori" class="text-red-600 font-bold">-</p> <!-- MERAH SESUAI REQUEST -->
                     </div>
                 </div>
 
                 <!-- Komoditas -->
                 <div class="flex items-start gap-3">
-                    <i data-lucide="package" class="w-4 h-4 text-gray-400 mt-0.5"></i>
+                    <i data-lucide="package" class="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0"></i>
                     <div class="flex-1">
                         <p class="text-[10px] text-gray-400 uppercase font-semibold">Komoditas</p>
-                        <p id="detail-produk" class="text-emerald-700 font-medium text-xs leading-relaxed mt-1">-</p>
+                        <p id="detail-produk" class="text-emerald-600 font-medium text-xs leading-relaxed mt-1">-</p> <!-- HIJAU SESUAI REQUEST -->
                     </div>
                 </div>
 
                 <!-- Status Badge -->
                 <div class="flex items-center gap-3 pt-2 border-t border-gray-200 mt-2">
-                    <i data-lucide="shield-check" class="w-4 h-4 text-gray-400"></i>
+                    <i data-lucide="shield-check" class="w-4 h-4 text-gray-400 flex-shrink-0"></i>
                     <div class="flex-1 flex justify-between items-center">
                         <p class="text-[10px] text-gray-400 uppercase font-semibold">Status</p>
-                        <span id="badge-status" class="px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-500">
-                            -
+                        <span id="badge-status" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">
+                            Menunggu
                         </span>
                     </div>
                 </div>
@@ -156,16 +168,16 @@
 
             <!-- ACTION BUTTONS -->
             <div class="mt-6 space-y-3">
-                <!-- Tombol Setujui (Hanya muncul jika Menunggu) -->
-                <button id="btn-approve" onclick="approveData()" class="hidden w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95">
+                <!-- Tombol Setujui (Hijau Neon) -->
+                <button id="btn-approve" onclick="approveData()" class="hidden w-full neon-green text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95">
                     <i data-lucide="check-circle" class="w-5 h-5"></i>
                     <span>SETUJUI PENDAFTARAN</span>
                 </button>
 
-                <!-- Tombol Scan QR (Opsional/Placeholder) -->
+                <!-- Tombol Scan QR (Biru) -->
                 <button onclick="location.reload()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl shadow flex items-center justify-center gap-2 transition-all active:scale-95">
                     <i data-lucide="refresh-cw" class="w-5 h-5"></i>
-                    <span>REFRESH / SCAN QR</span>
+                    <span>SCAN QR CODE</span>
                 </button>
             </div>
 
@@ -179,7 +191,7 @@
 
     <script>
         // ==========================================
-        // KONFIGURASI
+        // KONFIGURASI URL BACKEND
         // ==========================================
         // PASTE URL GOOGLE SCRIPT ANDA DI SINI
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwIooX7W_wOsiCX5RIqSHWTfWP0N4DxwIGUQaiSLegIPR-xHmh0xlFXNIW8EqvrqHxo/exec";
@@ -235,7 +247,7 @@
             document.getElementById('detail-id').textContent = data.id || "-";
             document.getElementById('detail-kk').textContent = data.kk || "-";
             document.getElementById('detail-kelurahan').textContent = data.kelurahan || "-";
-            document.getElementById('detail-nama').textContent = data.nama || "-";
+            document.getElementById('detail-nama').textContent = data.nama || data.nama_pemilik || "-";
             document.getElementById('detail-kategori').textContent = data.kategori || "-";
             document.getElementById('detail-produk').textContent = data.produk || "-";
 
@@ -265,32 +277,19 @@
                 // Efek Confetti
                 triggerConfetti();
 
-            } else if (status === "Menunggu") {
-                // ⏳ STATUS MENUNGGU
+            } else {
+                // ⏳ STATUS MENUNGGU (DEFAULT)
                 statusText.textContent = "MENUNGGU VERIFIKASI";
                 statusText.className = "text-lg font-bold text-amber-500 uppercase tracking-wide";
                 
-                iconContainer.className = "w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-3 bg-amber-100";
+                iconContainer.className = "w-14 h-14 rounded-full mx-auto flex items-center justify-center mb-3 bg-gray-50";
                 icon.setAttribute('data-lucide', 'clock');
-                icon.className = "w-8 h-8 text-amber-600";
+                icon.className = "w-8 h-8 text-amber-500";
                 
                 badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700";
                 badge.textContent = "Menunggu";
 
                 btnApprove.classList.remove('hidden'); // Tampilkan tombol approve
-            } else {
-                // ❌ STATUS LAINNYA
-                statusText.textContent = "TIDAK VALID";
-                statusText.className = "text-lg font-bold text-red-500 uppercase tracking-wide";
-                
-                iconContainer.className = "w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-3 bg-red-100";
-                icon.setAttribute('data-lucide', 'x-circle');
-                icon.className = "w-8 h-8 text-red-600";
-                
-                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700";
-                badge.textContent = "Ditolak";
-                
-                btnApprove.classList.add('hidden');
             }
             
             // Re-render icons after DOM update
