@@ -172,21 +172,27 @@
         let currentId = "";
 
         // ==========================================
-        // INISIALISASI
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get("id");
-
-            if (!id) {
-                showError("ID Pendaftaran tidak ditemukan di URL. Pastikan Anda membuka link dari QR Code.");
-                return;
-            }
-
-            currentId = id;
-            fetchData(id);
-        });
-
+// INISIALISASI + DEBUG
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get("id");
+    
+    // 🔍 DEBUG LOG - Buka Console Browser (F12) untuk melihat ini
+    console.log("🔍 ID dari URL:", id);
+    console.log("🌐 Full URL:", window.location.href);
+    
+    if (!id) {
+        console.error("❌ ID tidak ditemukan!");
+        showError("ID Pendaftaran tidak ditemukan di URL");
+        return;
+    }
+    
+    console.log("✅ ID valid, memulai fetch data...");
+    currentId = id;
+    fetchData(id);
+});
+        
         // ==========================================
         // AMBIL DATA DARI SERVER
         // ==========================================
