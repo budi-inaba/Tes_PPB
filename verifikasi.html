@@ -197,20 +197,30 @@ document.addEventListener('DOMContentLoaded', () => {
         // AMBIL DATA DARI SERVER
         // ==========================================
         async function fetchData(id) {
-            try {
-                const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=getById&id=${id}`);
-                const result = await res.json();
-
-                if (result.success && result.data) {
-                    renderData(result.data);
-                } else {
-                    showError(result.message || "Data tidak ditemukan");
-                }
-            } catch (err) {
-                console.error(err);
-                showError("Gagal menghubungi server");
-            }
+    try {
+        const url = `${GOOGLE_SCRIPT_URL}?action=getById&id=${encodeURIComponent(id)}`;
+        console.log("🌐 Fetch URL:", url);
+        
+        const res = await fetch(url);
+        console.log("📡 HTTP Status:", res.status);
+        
+        const text = await res.text();
+        console.log("📦 Raw Response:", text.substring(0, 500)); // Potong agar tidak terlalu panjang
+        
+        const result = JSON.parse(text);
+        
+        if (result.success && result.data) {
+            console.log("✅ Data found:", result.data);
+            renderData(result.data);
+        } else {
+            console.error("❌ Backend returned error:", result.message);
+            showError(result.message || "Data tidak ditemukan");
         }
+    } catch (err) {
+        console.error("💥 Exception:", err);
+        showError("Error: " + err.message);
+    }
+}
 
         // ==========================================
         // RENDER UI
