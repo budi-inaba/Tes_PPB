@@ -8,41 +8,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Canvas Confetti (Untuk efek saat Data Valid) -->
+    <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
-        body {
-            background-color: #0f172a; /* Slate 900 */
-            font-family: 'Inter', sans-serif;
-        }
-        .fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        /* Custom Loader */
-        .loader {
-            border: 3px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 3px solid #3b82f6;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .neon-green {
-            background-color: #10b981; /* Emerald 500 */
-            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
-        }
-        .neon-green:hover {
-            background-color: #059669; /* Emerald 600 */
-        }
+        body { background-color: #0f172a; font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .neon-green { background-color: #10b981; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); }
+        .neon-green:hover { background-color: #059669; }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
@@ -50,19 +24,14 @@
     <!-- CARD CONTAINER -->
     <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden relative fade-in">
         
-        <!-- HEADER GRADIENT (Blue to Green/Teal like Screenshot) -->
-        <div class="bg-gradient-to-r from-blue-600 to-emerald-500 p-6 text-white text-center relative overflow-hidden">
-            <!-- Background decorative circle -->
+        <!-- HEADER (Gradient Biru ke Hijau) -->
+        <div class="bg-gradient-to-r from-blue-600 to-emerald-500 p-6 text-white text-center relative">
             <div class="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-white opacity-10 rounded-full"></div>
-            
             <div class="relative z-10 flex flex-col items-center">
-                <!-- LOGO -->
+                <!-- LOGO RPTRA -->
                 <div class="bg-white text-blue-600 font-extrabold text-xl px-3 py-1 rounded inline-block mb-2 tracking-wider shadow-md">
                     RPTRA
-                    <!-- Ganti div di atas dengan <img> jika ingin pakai file logo-rptra.png -->
-                    <!-- <img src="logo-rptra.png" class="h-8" onerror="this.style.display='none'; this.parentElement.innerHTML='RPTRA'"> -->
                 </div>
-                
                 <h1 class="text-lg font-bold">Verifikasi Pendaftaran</h1>
                 <p class="text-xs text-blue-100 mt-1">Program Pangan Bersubsidi</p>
                 <p class="text-[10px] text-blue-200">RPTRA Kenanga Cideng</p>
@@ -71,16 +40,23 @@
 
         <!-- LOADING STATE -->
         <div id="loading-state" class="p-12 flex flex-col items-center justify-center">
-            <div class="loader mb-4"></div>
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
             <p class="text-gray-500 text-sm">Mengambil data...</p>
         </div>
 
-        <!-- CONTENT STATE (Hidden by default) -->
+        <!-- ERROR STATE (Jika Gagal) -->
+        <div id="error-state" class="hidden p-12 text-center">
+            <i data-lucide="alert-circle" class="w-12 h-12 text-red-500 mx-auto mb-3"></i>
+            <h3 class="text-lg font-bold text-gray-800">Data Tidak Ditemukan</h3>
+            <p id="error-msg" class="text-sm text-gray-500 mt-2">ID Registrasi tidak valid.</p>
+        </div>
+
+        <!-- CONTENT STATE (Tampilan Utama) -->
         <div id="content-state" class="hidden p-6">
             
             <!-- STATUS ICON & TEXT -->
             <div class="text-center mb-6">
-                <div id="status-icon-container" class="w-14 h-14 rounded-full mx-auto flex items-center justify-center mb-3 bg-gray-50">
+                <div id="status-icon-container" class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-3 bg-gray-50">
                     <i id="status-icon" data-lucide="clock" class="w-8 h-8 text-amber-500"></i>
                 </div>
                 <h2 id="status-text" class="text-lg font-bold uppercase tracking-wide text-amber-500">
@@ -93,7 +69,7 @@
                 
                 <!-- Waktu -->
                 <div class="flex items-start gap-3">
-                    <i data-lucide="calendar" class="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0"></i>
+                    <i data-lucide="calendar" class="w-4 h-4 text-gray-400 mt-0.5"></i>
                     <div class="flex-1">
                         <p class="text-[10px] text-gray-400 uppercase font-semibold">Waktu Pendaftaran</p>
                         <p id="detail-waktu" class="text-gray-700 font-medium">-</p>
@@ -102,7 +78,7 @@
 
                 <!-- ID -->
                 <div class="flex items-center gap-3">
-                    <i data-lucide="hash" class="w-4 h-4 text-gray-400 flex-shrink-0"></i>
+                    <i data-lucide="hash" class="w-4 h-4 text-gray-400"></i>
                     <div class="flex-1 flex justify-between">
                         <p class="text-[10px] text-gray-400 uppercase font-semibold">ID Registrasi</p>
                         <p id="detail-id" class="text-gray-700 font-mono font-bold">-</p>
@@ -111,7 +87,7 @@
 
                 <!-- KK -->
                 <div class="flex items-center gap-3">
-                    <i data-lucide="id-card" class="w-4 h-4 text-gray-400 flex-shrink-0"></i>
+                    <i data-lucide="id-card" class="w-4 h-4 text-gray-400"></i>
                     <div class="flex-1 flex justify-between">
                         <p class="text-[10px] text-gray-400 uppercase font-semibold">No. KK</p>
                         <p id="detail-kk" class="text-gray-700 font-mono">-</p>
@@ -120,7 +96,7 @@
 
                 <!-- Kelurahan -->
                 <div class="flex items-center gap-3">
-                    <i data-lucide="map-pin" class="w-4 h-4 text-gray-400 flex-shrink-0"></i>
+                    <i data-lucide="map-pin" class="w-4 h-4 text-gray-400"></i>
                     <div class="flex-1 flex justify-between">
                         <p class="text-[10px] text-gray-400 uppercase font-semibold">Kelurahan</p>
                         <p id="detail-kelurahan" class="text-gray-700 font-semibold">-</p>
@@ -129,52 +105,50 @@
 
                 <!-- Nama -->
                 <div class="flex items-center gap-3">
-                    <i data-lucide="user" class="w-4 h-4 text-gray-400 flex-shrink-0"></i>
+                    <i data-lucide="user" class="w-4 h-4 text-gray-400"></i>
                     <div class="flex-1 flex justify-between">
                         <p class="text-[10px] text-gray-400 uppercase font-semibold">Nama Pemilik Kartu</p>
                         <p id="detail-nama" class="text-gray-700 font-semibold">-</p>
                     </div>
                 </div>
 
-                <!-- Kategori -->
+                <!-- Kategori (MERAH) -->
                 <div class="flex items-center gap-3">
-                    <i data-lucide="tag" class="w-4 h-4 text-gray-400 flex-shrink-0"></i>
+                    <i data-lucide="tag" class="w-4 h-4 text-gray-400"></i>
                     <div class="flex-1 flex justify-between">
                         <p class="text-[10px] text-gray-400 uppercase font-semibold">Kategori Penerima</p>
-                        <p id="detail-kategori" class="text-red-600 font-bold">-</p> <!-- MERAH SESUAI REQUEST -->
+                        <p id="detail-kategori" class="text-red-600 font-bold">-</p>
                     </div>
                 </div>
 
-                <!-- Komoditas -->
+                <!-- Komoditas (HIJAU) -->
                 <div class="flex items-start gap-3">
-                    <i data-lucide="package" class="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0"></i>
+                    <i data-lucide="package" class="w-4 h-4 text-gray-400 mt-0.5"></i>
                     <div class="flex-1">
                         <p class="text-[10px] text-gray-400 uppercase font-semibold">Komoditas</p>
-                        <p id="detail-produk" class="text-emerald-600 font-medium text-xs leading-relaxed mt-1">-</p> <!-- HIJAU SESUAI REQUEST -->
+                        <p id="detail-produk" class="text-emerald-600 font-medium text-xs leading-relaxed mt-1">-</p>
                     </div>
                 </div>
 
                 <!-- Status Badge -->
                 <div class="flex items-center gap-3 pt-2 border-t border-gray-200 mt-2">
-                    <i data-lucide="shield-check" class="w-4 h-4 text-gray-400 flex-shrink-0"></i>
+                    <i data-lucide="shield-check" class="w-4 h-4 text-gray-400"></i>
                     <div class="flex-1 flex justify-between items-center">
                         <p class="text-[10px] text-gray-400 uppercase font-semibold">Status</p>
-                        <span id="badge-status" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">
-                            Menunggu
-                        </span>
+                        <span id="badge-status" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">Menunggu</span>
                     </div>
                 </div>
             </div>
 
             <!-- ACTION BUTTONS -->
             <div class="mt-6 space-y-3">
-                <!-- Tombol Setujui (Hijau Neon) -->
+                <!-- Tombol Setujui (Hanya muncul jika Menunggu) -->
                 <button id="btn-approve" onclick="approveData()" class="hidden w-full neon-green text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95">
                     <i data-lucide="check-circle" class="w-5 h-5"></i>
                     <span>SETUJUI PENDAFTARAN</span>
                 </button>
 
-                <!-- Tombol Scan QR (Biru) -->
+                <!-- Tombol Scan QR / Refresh -->
                 <button onclick="location.reload()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl shadow flex items-center justify-center gap-2 transition-all active:scale-95">
                     <i data-lucide="refresh-cw" class="w-5 h-5"></i>
                     <span>SCAN QR CODE</span>
@@ -191,9 +165,8 @@
 
     <script>
         // ==========================================
-        // KONFIGURASI URL BACKEND
+        // KONFIGURASI URL BACKEND (WAJIB DIGANTI!)
         // ==========================================
-        // PASTE URL GOOGLE SCRIPT ANDA DI SINI
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby5PfxYkzgTX1aeF5wzNRlNsx728qsj6LXvj666ei-RFvmyrIaw1CjHBGTTgUPgBOqo/exec";
         
         let currentId = "";
@@ -202,12 +175,11 @@
         // INISIALISASI
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            // Ambil ID dari URL (contoh: verifikasi.html?id=PPB-123)
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get("id");
 
             if (!id) {
-                showError("ID Pendaftaran tidak ditemukan di URL");
+                showError("ID Pendaftaran tidak ditemukan di URL. Pastikan Anda membuka link dari QR Code.");
                 return;
             }
 
@@ -238,16 +210,15 @@
         // RENDER UI
         // ==========================================
         function renderData(data) {
-            // Sembunyikan loading, tampilkan konten
             document.getElementById('loading-state').classList.add('hidden');
             document.getElementById('content-state').classList.remove('hidden');
 
-            // Isi Data Teks
+            // Isi Data
             document.getElementById('detail-waktu').textContent = data.waktu || "-";
             document.getElementById('detail-id').textContent = data.id || "-";
             document.getElementById('detail-kk').textContent = data.kk || "-";
             document.getElementById('detail-kelurahan').textContent = data.kelurahan || "-";
-            document.getElementById('detail-nama').textContent = data.nama || data.nama_pemilik || "-";
+            document.getElementById('detail-nama').textContent = data.nama || "-";
             document.getElementById('detail-kategori').textContent = data.kategori || "-";
             document.getElementById('detail-produk').textContent = data.produk || "-";
 
@@ -264,115 +235,18 @@
                 // ✅ STATUS VALID
                 statusText.textContent = "DATA VALID";
                 statusText.className = "text-xl font-bold text-emerald-600 uppercase tracking-wide";
-                
                 iconContainer.className = "w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-3 bg-emerald-100";
                 icon.setAttribute('data-lucide', 'check-circle');
                 icon.className = "w-8 h-8 text-emerald-600";
-                
                 badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700";
                 badge.textContent = "Disetujui";
-
                 btnApprove.classList.add('hidden'); // Sembunyikan tombol approve
-                
-                // Efek Confetti
                 triggerConfetti();
-
             } else {
-                // ⏳ STATUS MENUNGGU (DEFAULT)
+                //  STATUS MENUNGGU
                 statusText.textContent = "MENUNGGU VERIFIKASI";
                 statusText.className = "text-lg font-bold text-amber-500 uppercase tracking-wide";
-                
-                iconContainer.className = "w-14 h-14 rounded-full mx-auto flex items-center justify-center mb-3 bg-gray-50";
+                iconContainer.className = "w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-3 bg-gray-50";
                 icon.setAttribute('data-lucide', 'clock');
                 icon.className = "w-8 h-8 text-amber-500";
-                
                 badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700";
-                badge.textContent = "Menunggu";
-
-                btnApprove.classList.remove('hidden'); // Tampilkan tombol approve
-            }
-            
-            // Re-render icons after DOM update
-            lucide.createIcons();
-        }
-
-        // ==========================================
-        // FUNGSI APPROVE (SETUJUI)
-        // ==========================================
-        async function approveData() {
-            if (!confirm("Apakah Anda yakin ingin menyetujui pendaftaran ini?")) return;
-
-            const btn = document.getElementById('btn-approve');
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = `<div class="loader w-5 h-5 border-white border-t-transparent"></div> Memproses...`;
-
-            try {
-                const res = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: "POST",
-                    body: JSON.stringify({
-                        action: "approve",
-                        id: currentId
-                    })
-                });
-                const result = await res.json();
-
-                if (result.success) {
-                    showToast("Berhasil Disetujui!");
-                    fetchData(currentId); // Reload data untuk update tampilan
-                } else {
-                    alert("Gagal: " + result.message);
-                }
-            } catch (err) {
-                alert("Error koneksi server");
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-                lucide.createIcons();
-            }
-        }
-
-        // ==========================================
-        // UTILS (Error & Confetti)
-        // ==========================================
-        function showError(msg) {
-            document.getElementById('loading-state').classList.add('hidden');
-            document.getElementById('content-state').classList.remove('hidden');
-            document.getElementById('detail-nama').textContent = msg;
-            // Hide other details
-            document.querySelectorAll('#content-state .bg-gray-50 > div:not(:first-child)').forEach(el => el.style.display = 'none');
-        }
-
-        function triggerConfetti() {
-            var duration = 3 * 1000;
-            var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
-            var random = function(min, max) {
-              return Math.random() * (max - min) + min;
-            }
-
-            var interval = setInterval(function() {
-              var timeLeft = animationEnd - Date.now();
-
-              if (timeLeft <= 0) {
-                return clearInterval(interval);
-              }
-
-              var particleCount = 50 * (timeLeft / duration);
-              confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.1, 0.3), y: Math.random() - 0.2 } }));
-              confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.7, 0.9), y: Math.random() - 0.2 } }));
-            }, 250);
-        }
-
-        function showToast(message) {
-            // Simple toast notification
-            const toast = document.createElement('div');
-            toast.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 fade-in text-sm font-semibold';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-    </script>
-</body>
-</html>
