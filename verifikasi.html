@@ -326,6 +326,8 @@
         let currentId = "";
         let pendingApprovalId = null;
         let isApproved = false; // Flag untuk tracking status approval
+        let optimisticApproved = false;  // ✨ Baru: flag untuk optimistic UI
+        let isSyncing = false;         
 
         // ==========================================
         // INISIALISASI
