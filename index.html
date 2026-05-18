@@ -1442,8 +1442,7 @@ function togglePassword() {
 // ==========================
 // ADMIN: LOAD DATA
 async function loadDataAdmin() {
-    loadDashboardAdmin();
-    // 🔒 CEK LOGIN ADMIN
+    
   if (!localStorage.getItem('isAdmin')) {
     switchView('login');
     return;
@@ -1462,7 +1461,7 @@ async function loadDataAdmin() {
 
        adminDataCache = data.data; // SIMPAN DATA
     renderAdminTable(adminDataCache);      
-      loadStokKomoditas();
+      await loadStokKomoditas();
       
 } catch (err) {
     tbody.innerHTML = `<tr><td colspan="6" class="text-center text-red-500">Error koneksi</td></tr>`;
