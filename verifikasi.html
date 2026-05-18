@@ -423,21 +423,33 @@ document.addEventListener('DOMContentLoaded', () => {
 // ===============================
 // 🔐 FUNGSI LOGIN PETUGAS
 // ===============================
-
 let scannedURL = null; // Simpan URL QR yang discan
 
 // Tampilkan modal login
 function showPetugasLogin(url) {
-  console.log("🔐 showPetugasLogin dipanggil dengan URL:", url); // ← DEBUG LOG
-  scannedURL = url;
-  document.getElementById('login-modal').classList.remove('hidden');
-  document.getElementById('petugas-password').value = '';
-  document.getElementById('login-error').classList.add('hidden');
-  document.getElementById('petugas-password').classList.remove('input-error');
-  document.getElementById('petugas-password').focus();
-  lucide.createIcons();
+  try {
+    console.log("🔐 showPetugasLogin dipanggil");
+    scannedURL = url;
+    
+    const modal = document.getElementById('login-modal');
+    if (!modal) throw new Error("Modal element not found");
+    
+    modal.classList.remove('hidden');
+    
+    const passwordInput = document.getElementById('petugas-password');
+    if (!passwordInput) throw new Error("Password input not found");
+    
+    passwordInput.value = '';
+    passwordInput.focus();
+    
+    lucide.createIcons();
+    
+  } catch (err) {
+    console.error("💥 Error di showPetugasLogin:", err);
+    alert("Gagal menampilkan login: " + err.message);
+  }
 }
-
+        
 // Toggle show/hide password
 function togglePetugasPassword() {
   const input = document.getElementById('petugas-password');
