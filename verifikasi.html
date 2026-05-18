@@ -268,21 +268,24 @@ document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
 
             if (status === "Disetujui") {
-                // ✅ STATUS VALID - IKON CEKLIST HIJAU
-                statusText.textContent = "DATA VALID";
-                statusText.className = "text-xl font-bold text-emerald-600 uppercase tracking-wide";
+        // ✅ STATUS VALID - CEK LIST HIJAU BESAR
+        statusText.textContent = "DATA VALID";
+        statusText.className = "text-xl font-bold text-emerald-600 uppercase tracking-wide";
+        
+        // Container ikon dengan background hijau muda
+        iconContainer.className = "w-20 h-20 rounded-full mx-auto flex items-center justify-center mb-4 bg-emerald-100 shadow-inner";
+        
+        // 🔥 IKON CEK LIST HIJAU - Lucide 'check' dengan stroke tebal
+        icon.setAttribute('data-lucide', 'check');
+        icon.className = "w-12 h-12 text-emerald-600 stroke-[3.5]";
+        
+        // Badge status
+        badge.className = "px-4 py-1.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 shadow-sm";
+        badge.textContent = "✓ Disetujui";
+        
+        btnApprove.classList.add('hidden');
+        triggerConfetti();
                 
-                iconContainer.className = "w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-3 bg-emerald-100";
-                
-                // 🔥 IKON CEKLIST HIJAU (bukan check-circle)
-                icon.setAttribute('data-lucide', 'check');
-                icon.className = "w-10 h-10 text-emerald-600 stroke-[3]";
-                
-                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700";
-                badge.textContent = "Disetujui";
-                
-                btnApprove.classList.add('hidden');
-                triggerConfetti();
             } else {
                 // ⏳ STATUS MENUNGGU
                 statusText.textContent = "MENUNGGU VERIFIKASI";
