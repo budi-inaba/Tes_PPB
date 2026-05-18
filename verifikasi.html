@@ -246,62 +246,60 @@ document.addEventListener('DOMContentLoaded', () => {
         // RENDER UI
         // ==========================================
         function renderData(data) {
-            document.getElementById('loading-state').classList.add('hidden');
-            document.getElementById('content-state').classList.remove('hidden');
+    document.getElementById('loading-state').classList.add('hidden');
+    document.getElementById('content-state').classList.remove('hidden');
 
-            // Isi Data
-            document.getElementById('detail-waktu').textContent = data.waktu || "-";
-            document.getElementById('detail-id').textContent = data.id || "-";
-            document.getElementById('detail-kk').textContent = data.kk || "-";
-            document.getElementById('detail-kelurahan').textContent = data.kelurahan || "-";
-            document.getElementById('detail-nama').textContent = data.nama || "-";
-            document.getElementById('detail-kategori').textContent = data.kategori || "-";
-            document.getElementById('detail-produk').textContent = data.produk || "-";
+    // Isi Data
+    document.getElementById('detail-waktu').textContent = data.waktu || "-";
+    document.getElementById('detail-id').textContent = data.id || "-";
+    document.getElementById('detail-kk').textContent = data.kk || "-";
+    document.getElementById('detail-kelurahan').textContent = data.kelurahan || "-";
+    document.getElementById('detail-nama').textContent = data.nama || "-";
+    document.getElementById('detail-kategori').textContent = data.kategori || "-";
+    document.getElementById('detail-produk').textContent = data.produk || "-";
 
-            const status = data.status;
-            const badge = document.getElementById('badge-status');
-            const statusText = document.getElementById('status-text');
-            const iconContainer = document.getElementById('status-icon-container');
-            const icon = document.getElementById('status-icon');
-            const btnApprove = document.getElementById('btn-approve');
+    const status = data.status;
+    const badge = document.getElementById('badge-status');
+    const statusText = document.getElementById('status-text');
+    const iconContainer = document.getElementById('status-icon-container');
+    // 🔥 PENTING: Ambil parent container, BUKAN elemen icon-nya
+    const btnApprove = document.getElementById('btn-approve');
 
-            lucide.createIcons();
-
-            if (status === "Disetujui") {
-        // ✅ STATUS VALID - CEK LIST HIJAU BESAR
+    if (status === "Disetujui") {
+        // ✅ STATUS VALID - CEK LIST HIJAU
         statusText.textContent = "DATA VALID";
         statusText.className = "text-xl font-bold text-emerald-600 uppercase tracking-wide";
         
-        // Container ikon dengan background hijau muda
         iconContainer.className = "w-20 h-20 rounded-full mx-auto flex items-center justify-center mb-4 bg-emerald-100 shadow-inner";
         
-        // 🔥 IKON CEK LIST HIJAU - Lucide 'check' dengan stroke tebal
-        icon.setAttribute('data-lucide', 'check');
-        icon.className = "w-12 h-12 text-emerald-600 stroke-[3.5]";
+        // 🔥 SOLUSI: Ganti innerHTML dengan elemen <i> baru
+        iconContainer.innerHTML = '<i data-lucide="check" class="w-12 h-12 text-emerald-600 stroke-[3.5]"></i>';
         
-        // Badge status
         badge.className = "px-4 py-1.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 shadow-sm";
         badge.textContent = "✓ Disetujui";
         
         btnApprove.classList.add('hidden');
         triggerConfetti();
-                
-            } else {
-                // ⏳ STATUS MENUNGGU
-                statusText.textContent = "MENUNGGU VERIFIKASI";
-                statusText.className = "text-lg font-bold text-amber-500 uppercase tracking-wide";
-                
-                iconContainer.className = "w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-3 bg-gray-50";
-                icon.setAttribute('data-lucide', 'clock');
-                icon.className = "w-8 h-8 text-amber-500";
-                
-                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700";
-                badge.textContent = "Menunggu";
-                
-                btnApprove.classList.remove('hidden');
-            }
-            lucide.createIcons();
-        }
+        
+    } else {
+        // ⏳ STATUS MENUNGGU
+        statusText.textContent = "MENUNGGU VERIFIKASI";
+        statusText.className = "text-lg font-bold text-amber-500 uppercase tracking-wide";
+        
+        iconContainer.className = "w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-3 bg-gray-50";
+        
+        // 🔥 SOLUSI: Ganti innerHTML dengan elemen <i> baru
+        iconContainer.innerHTML = '<i data-lucide="clock" class="w-8 h-8 text-amber-500"></i>';
+        
+        badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700";
+        badge.textContent = "Menunggu";
+        
+        btnApprove.classList.remove('hidden');
+    }
+    
+    // 🔥 PENTING: Panggil createIcons() SETELAH innerHTML diganti
+    lucide.createIcons();
+}
         
         // ==========================================
         // FUNGSI APPROVE
