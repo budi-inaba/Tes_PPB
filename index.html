@@ -861,49 +861,6 @@ function debounce(func, delay) {
   { nama: "Susu UHT", icon: "milk", cideng: 0, lainnya: 0 }
 ];
 
-function loadDashboardAdmin() {
-
-  const wrap = document.getElementById("stok-summary");
-
-  wrap.innerHTML = "";
-
-  komoditasData.forEach(item => {
-
-    const total = item.cideng + item.lainnya;
-
-   wrap.innerHTML += `
-<div class="stok-card">
-  <div class="stok-top">
-
-    <div class="stok-icon">
-      <i data-lucide="${item.icon}"></i>
-    </div>
-
-    <div class="flex-1">
-      <div class="stok-title">${item.nama}</div>
-
-      <div class="stok-badge-wrap">
-        <div class="stok-badge cideng">Cideng: ${item.cideng}</div>
-        <div class="stok-badge lainnya">Lainnya: ${item.lainnya}</div>
-      </div>
-
-      <div class="stok-footer">
-        <div class="stok-total-label">Total</div>
-        <div class="stok-total">${total}</div>
-      </div>
-
-    </div>
-  </div>
-</div>
-`;
-  });
-
-  document.getElementById("stok-last-update").innerText =
-    new Date().toLocaleTimeString('id-ID');
-
-  lucide.createIcons();
-}
-
 document.addEventListener('DOMContentLoaded', () => {
 
   views = {
