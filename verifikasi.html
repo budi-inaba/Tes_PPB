@@ -536,71 +536,73 @@
         }
 
         async function executeApprove() {
-            if (!pendingApprovalId) {
-                closeConfirmModal();
-                return;
-            }
-            
-            const btn = document.getElementById('btn-confirm-approve');
-            const originalBtnContent = btn.innerHTML;
-            
-            // Loading state
-            btn.disabled = true;
-            btn.innerHTML = `<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div> Memproses...`;
-            
-            try {
-                // 🔥 SOLUSI CORS: Gunakan text/plain untuk hindari preflight
-                const res = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: "POST",
-                    body: JSON.stringify({ 
-                        action: "approve", 
-                        id: pendingApprovalId,
-                        timestamp: new Date().toISOString()
-                    })
-                });
-                
-                // 🔥 Debug response
-                console.log("📡 Response status:", res.status);
-                const responseText = await res.text();
-                console.log("📦 Raw response:", responseText);
-                
-                // Parse JSON manual
-                let result;
-                try {
-                    result = JSON.parse(responseText);
-                } catch (e) {
-                    throw new Error("Response bukan JSON valid: " + responseText.substring(0, 100));
-                }
-                
-                if (result.success) {
-                    // ✨ UPDATE UI LANGSUNG SEBELUM CLOSE MODAL
-                    isApproved = true;
-                    updateStatusToValid();
-                    
-                    closeConfirmModal();
-                    showToast("✅ Pendaftaran berhasil disetujui!", "success");
-                    
-                    // Sync ke backend (background) untuk memastikan data tersimpan
-                    fetchData(pendingApprovalId);
-                } else {
-                    throw new Error(result.message || "Gagal memproses persetujuan");
-                }
-            } catch (err) {
-                console.error("❌ Error approve:", err);
-                
-                // 🔥 Deteksi jenis error
-                if (err.message.includes("Failed to fetch")) {
-                    showToast("⚠️ Koneksi gagal. Cek: 1) Deploy script sebagai 'Anyone' 2) URL benar 3) Tidak ada blokir CORS", "error");
-                } else {
-                    showToast("⚠️ " + err.message, "error");
-                }
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalBtnContent;
-                pendingApprovalId = null;
-                lucide.createIcons();
-            }
+    if (!pendingApprovalId) {
+        closeConfirmModal();
+        return;
+    }
+    
+    const btn = document.getElementById('btn-confirm-approve');
+    const originalBtnContent = btn.innerHTML;
+    
+    // Loading state
+    btn.disabled = true;
+    btn.innerHTML = `<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div> Memproses...`;
+    
+    try {
+        const res = await fetch(GOOGLE_SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify({ 
+                action: "approve", 
+                id: pendingApprovalId,
+                timestamp: new Date().toISOString()
+            })
+        });
+        
+        console.log("📡 Response status:", res.status);
+        const responseText = await res.text();
+        console.log("📦 Raw response:", responseText);
+        
+        let result;
+        try {
+            result = JSON.parse(responseText);
+        } catch (e) {
+            throw new Error("Response bukan JSON valid: " + responseText.substring(0, 100));
         }
+        
+        if (result.success) {
+            // ✨ OPTIMISTIC UI: Update langsung
+            optimisticApproved = true;
+            isApproved = true;
+            updateStatusToValid();
+            
+            closeConfirmModal();
+            showToast("✅ Pendaftaran berhasil disetujui!", "success");
+            
+            // ✨ SYNC KE BACKEND DENGAN DELAY (hindari race condition)
+            isSyncing = true;
+            setTimeout(() => {
+                fetchData(pendingApprovalId);
+                isSyncing = false;
+            }, 1500); // Delay 1.5 detik biar backend sempat update
+            
+        } else {
+            throw new Error(result.message || "Gagal memproses persetujuan");
+        }
+    } catch (err) {
+        console.error("❌ Error approve:", err);
+        
+        if (err.message.includes("Failed to fetch")) {
+            showToast("⚠️ Koneksi gagal. Cek CORS / URL / Deploy script", "error");
+        } else {
+            showToast("⚠️ " + err.message, "error");
+        }
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalBtnContent;
+        pendingApprovalId = null;
+        lucide.createIcons();
+    }
+}
         
         function showError(msg) {
             document.getElementById('loading-state').classList.add('hidden');
