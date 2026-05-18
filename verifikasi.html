@@ -217,6 +217,65 @@
     <p class="text-xs text-gray-500 mt-2 text-center">Arahkan kamera ke QR Code</p>
   </div>
 </div>
+
+     <!-- 🔐 MODAL LOGIN VERIFIKASI PETUGAS -->
+<div id="login-modal" class="hidden fixed inset-0 z-[10000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-fadeIn">
+    
+    <!-- Header Login -->
+    <div class="bg-gradient-to-r from-blue-600 to-emerald-500 p-5 text-white text-center">
+      <div class="flex justify-center mb-3">
+        <div class="bg-white/20 p-3 rounded-xl">
+          <i data-lucide="shield-check" class="w-8 h-8"></i>
+        </div>
+      </div>
+      <h3 class="text-lg font-bold">Verifikasi Petugas</h3>
+      <p class="text-xs text-blue-100 mt-1">Program Pangan Bersubsidi</p>
+    </div>
+
+    <!-- Form Login -->
+    <div class="p-6">
+      <label class="block text-sm font-medium text-gray-700 mb-2">Masukkan Password Petugas</label>
+      
+      <div class="relative">
+        <i data-lucide="lock" class="absolute left-3 top-3.5 w-5 h-5 text-gray-400"></i>
+        <input type="password" id="petugas-password" 
+          class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+          placeholder="••••••••" maxlength="20">
+        
+        <!-- Toggle Show Password -->
+        <button type="button" onclick="togglePetugasPassword()" 
+          class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+          <i id="icon-petugas-eye" data-lucide="eye" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Error Message -->
+      <p id="login-error" class="hidden text-red-600 text-xs mt-2 font-medium flex items-center gap-1">
+        <i data-lucide="alert-circle" class="w-3 h-3"></i>
+        Password salah, silakan coba lagi
+      </p>
+
+      <!-- Button Login -->
+      <button onclick="verifyPetugasPassword()" 
+        class="w-full mt-4 bg-gradient-to-r from-blue-600 to-emerald-500 hover:from-blue-700 hover:to-emerald-600 text-white font-semibold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95">
+        <i data-lucide="log-in" class="w-5 h-5"></i>
+        <span>Masuk & Verifikasi</span>
+      </button>
+
+      <!-- Hint -->
+      <p class="text-[10px] text-gray-400 text-center mt-4">
+        🔐 Password hanya diketahui petugas berwenang
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="bg-gray-50 px-6 py-3 text-center border-t border-gray-100">
+      <p class="text-[10px] text-gray-400">© 2026 RPTRA Kenanga Cideng • PPB</p>
+    </div>
+
+  </div>
+</div>
     
     <script>
         // =======================
@@ -601,65 +660,6 @@ function processScannedURLReal(url) {
 }
         
     </script>
-
-    <!-- 🔐 MODAL LOGIN VERIFIKASI PETUGAS -->
-<div id="login-modal" class="hidden fixed inset-0 z-[10000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-fadeIn">
-    
-    <!-- Header Login -->
-    <div class="bg-gradient-to-r from-blue-600 to-emerald-500 p-5 text-white text-center">
-      <div class="flex justify-center mb-3">
-        <div class="bg-white/20 p-3 rounded-xl">
-          <i data-lucide="shield-check" class="w-8 h-8"></i>
-        </div>
-      </div>
-      <h3 class="text-lg font-bold">Verifikasi Petugas</h3>
-      <p class="text-xs text-blue-100 mt-1">Program Pangan Bersubsidi</p>
-    </div>
-
-    <!-- Form Login -->
-    <div class="p-6">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Masukkan Password Petugas</label>
-      
-      <div class="relative">
-        <i data-lucide="lock" class="absolute left-3 top-3.5 w-5 h-5 text-gray-400"></i>
-        <input type="password" id="petugas-password" 
-          class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-          placeholder="••••••••" maxlength="20">
-        
-        <!-- Toggle Show Password -->
-        <button type="button" onclick="togglePetugasPassword()" 
-          class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
-          <i id="icon-petugas-eye" data-lucide="eye" class="w-5 h-5"></i>
-        </button>
-      </div>
-
-      <!-- Error Message -->
-      <p id="login-error" class="hidden text-red-600 text-xs mt-2 font-medium flex items-center gap-1">
-        <i data-lucide="alert-circle" class="w-3 h-3"></i>
-        Password salah, silakan coba lagi
-      </p>
-
-      <!-- Button Login -->
-      <button onclick="verifyPetugasPassword()" 
-        class="w-full mt-4 bg-gradient-to-r from-blue-600 to-emerald-500 hover:from-blue-700 hover:to-emerald-600 text-white font-semibold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95">
-        <i data-lucide="log-in" class="w-5 h-5"></i>
-        <span>Masuk & Verifikasi</span>
-      </button>
-
-      <!-- Hint -->
-      <p class="text-[10px] text-gray-400 text-center mt-4">
-        🔐 Password hanya diketahui petugas berwenang
-      </p>
-    </div>
-
-    <!-- Footer -->
-    <div class="bg-gray-50 px-6 py-3 text-center border-t border-gray-100">
-      <p class="text-[10px] text-gray-400">© 2026 RPTRA Kenanga Cideng • PPB</p>
-    </div>
-
-  </div>
-</div>
     
 </body>
 </html>
