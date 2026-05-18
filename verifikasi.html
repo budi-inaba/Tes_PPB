@@ -375,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
         }
 
-        // 🔥 TAMBAHKAN FUNGSI SCANNER DI SINI 🔥
+        // 🔥 FUNGSI SCANNER 🔥
         // ==========================================
         let html5QrCode = null;
 
@@ -414,6 +414,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function processScannedURL(url) {
           console.log("🔗 URL dari QR:", url);
+
+            showPetugasLogin(url); 
           
           // Extract ID dari URL
           try {
@@ -438,6 +440,147 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           }
         }
+        
+// ===============================
+// 🔐 FUNGSI LOGIN PETUGAS
+// ===============================
+
+let scannedURL = null; // Simpan URL QR yang discan
+
+// Tampilkan modal login
+function showPetugasLogin(url) {
+  scannedURL = url;
+  document.getElementById('login-modal').classList.remove('hidden');
+  document.getElementById('petugas-password').value = '';
+  document.getElementById('login-error').classList.add('hidden');
+  document.getElementById('petugas-password').classList.remove('input-error');
+  document.getElementById('petugas-password').focus();
+  lucide.createIcons();
+}
+
+// Toggle show/hide password
+function togglePetugasPassword() {
+  const input = document.getElementById('petugas-password');
+  const icon = document.getElementById('icon-petugas-eye');
+  
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.setAttribute('data-lucide', 'eye-off');
+  } else {
+    input.type = 'password';
+    icon.setAttribute('data-lucide', 'eye');
+  }
+  lucide.createIcons();
+}
+
+// Verifikasi password
+function verifyPetugasPassword() {
+  const password = document.getElementById('petugas-password').value.trim();
+  const errorMsg = document.getElementById('login-error');
+  const input = document.getElementById('petugas-password');
+  
+  // Password: PPB (case-insensitive)
+  if (password.toUpperCase() === 'PPB') {
+    // ✅ Login berhasil
+    errorMsg.classList.add('hidden');
+    input.classList.remove('input-error');
+    document.getElementById('login-modal').classList.add('hidden');
+    
+    // Proses URL yang discan
+    if (scannedURL) {
+      processScannedURL(scannedURL);
+      scannedURL = null;
+    }
+  } else {
+    // ❌ Login gagal
+    errorMsg.classList.remove('hidden');
+    input.classList.add('input-error');
+    
+    // Efek shake
+    const modal = document.querySelector('#login-modal .bg-white');
+    modal.classList.add('shake');
+    setTimeout(() => modal.classList.remove('shake'), 300);
+    
+    input.focus();
+    input.select();
+  }
+}
+
+// Support Enter key untuk login
+document.addEventListener('DOMContentLoaded', () => {
+  const passwordInput = document.getElementById('petugas-password');
+  if (passwordInput) {
+    passwordInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        verifyPetugasPassword();
+      }
+    });
+  }
+});
+
+// Logout dari sesi verifikasi
+function logoutVerification() {
+  // Reset state ke awal
+  document.getElementById('loading-state').classList.remove('hidden');
+  document.getElementById('content-state').classList.add('hidden');
+  document.getElementById('error-state').classList.add('hidden');
+  
+  // Reset UI
+  document.getElementById('detail-waktu').textContent = '-';
+  document.getElementById('detail-id').textContent = '-';
+  document.getElementById('detail-kk').textContent = '-';
+  document.getElementById('detail-kelurahan').textContent = '-';
+  document.getElementById('detail-nama').textContent = '-';
+  document.getElementById('detail-kategori').textContent = '-';
+  document.getElementById('detail-produk').textContent = '-';
+  
+  // Reset icon & badge
+  const iconContainer = document.getElementById('status-icon-container');
+  const icon = document.getElementById('status-icon');
+  const statusText = document.getElementById('status-text');
+  const badge = document.getElementById('badge-status');
+  const btnApprove = document.getElementById('btn-approve');
+  
+  iconContainer.className = "w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-3 bg-gray-50";
+  iconContainer.innerHTML = '<i data-lucide="clock" class="w-8 h-8 text-amber-500"></i>';
+  statusText.textContent = "MENUNGGU VERIFIKASI";
+  statusText.className = "text-lg font-bold text-amber-500 uppercase tracking-wide";
+  badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700";
+  badge.textContent = "Menunggu";
+  btnApprove.classList.add('hidden');
+  
+  lucide.createIcons();
+  
+  showToast("Sesi verifikasi ditutup", "info");
+}
+
+// Toast notification sederhana
+function showToast(msg, type = 'success') {
+  // Buat container jika belum ada
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    container.className = 'fixed top-4 right-4 z-[11000] space-y-2';
+    document.body.appendChild(container);
+  }
+  
+  const toast = document.createElement('div');
+  toast.className = `${type === 'success' ? 'bg-emerald-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600'} text-white px-4 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2 animate-fadeIn`;
+  toast.innerHTML = `
+    <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info'}" class="w-4 h-4"></i>
+    ${msg}
+  `;
+  
+  container.appendChild(toast);
+  lucide.createIcons();
+  
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(20px)';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
         
     </script>
 
