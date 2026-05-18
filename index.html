@@ -766,68 +766,98 @@
 </div>
 
  <!-- CARD STOK -->
-    <div class="mb-8 p-5 border rounded-2xl bg-gray-50">
-
-      <h3 class="text-xl font-bold flex items-center gap-2 mb-1">
-        📦 Monitoring Stok Komoditas
+    <!-- ===============================
+     MONITORING STOK KOMODITAS
+     =============================== -->
+<div class="mb-8 p-5 border rounded-2xl bg-gradient-to-br from-gray-50 to-white shadow-sm">
+  
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+    <div>
+      <h3 class="text-xl font-bold flex items-center gap-2 text-gray-800">
+        <i data-lucide="package" class="w-5 h-5 text-blue-600"></i>
+        Monitoring Stok Komoditas
       </h3>
-
-      <p class="text-sm text-gray-500 mb-4">
-        Terintegrasi Spreadsheet STOK • Update Real-Time
+      <p class="text-sm text-gray-500 mt-1">
+        Terintegrasi dengan Google Sheet • Update Real-Time
       </p>
-
-      <div class="flex gap-3 mb-4">
-
-        <div class="px-4 py-2 bg-green-100 text-green-700 rounded-xl font-semibold">
-          ● Live
-        </div>
-
-        <button onclick="loadStokKomoditas()"
-          class="bg-blue-600 text-white px-4 py-2 rounded-xl">
-          Refresh
-        </button>
-
-      </div>
-
-      <div class="flex justify-between text-sm text-gray-500 mb-4">
-        <div>
-          Sinkronisasi terakhir:
-          <span class="stok-last-update font-semibold">-</span>
-        </div>
-
-        <div>Auto refresh setiap 3 detik</div>
-      </div>
-
-      <!-- SUMMARY -->
-     <div id="stok-summary"
-        class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4">
     </div>
-
-        <div class="mt-6 overflow-x-auto">
-  <table class="w-full text-sm border rounded-lg">
-    <thead class="bg-gray-100">
-      <tr>
-        <th class="p-3 border text-left">Komoditas</th>
-        <th class="p-3 border text-center">Cideng</th>
-        <th class="p-3 border text-center">Lainnya</th>
-        <th class="p-3 border text-center">Total</th>
-        <th class="p-3 border text-center">Status</th>
-      </tr>
-    </thead>
-    <tbody id="stok-container">
-      <!-- Data akan dirender di sini oleh JavaScript -->
-    </tbody>
-  </table>
-</div>
-        
-  <!-- UPDATE -->
-    <div class="mt-8 text-sm text-gray-500">
-      Sinkronisasi terakhir:
-      <span class="stok-last-update font-semibold text-gray-700">
-        -
+    
+    <div class="flex items-center gap-2">
+      <span id="stok-connection-status" class="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 rounded-full text-xs font-medium text-gray-600">
+        <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
+        Connecting...
       </span>
+      <button onclick="loadStokKomoditas()" 
+              class="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition shadow-sm">
+        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+        Refresh
+      </button>
     </div>
+  </div>
+
+  <!-- Loading State -->
+  <div id="stok-loading" class="hidden py-8 text-center">
+    <div class="inline-flex flex-col items-center gap-3">
+      <div class="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+      <p class="text-sm text-gray-500">Memuat data stok...</p>
     </div>
+  </div>
+
+  <!-- Error State -->
+  <div id="stok-error" class="hidden py-6 px-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+    <div class="flex items-start gap-2">
+      <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+      <div>
+        <p class="font-semibold">Gagal memuat data stok</p>
+        <p id="stok-error-message" class="mt-1 opacity-90">Silakan periksa koneksi atau coba refresh.</p>
+        <button onclick="loadStokKomoditas()" class="mt-3 text-xs font-medium underline hover:text-red-900">
+          Coba Lagi
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div id="stok-summary" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+    <!-- Akan dirender oleh JavaScript -->
+  </div>
+
+  <!-- Detail Table -->
+  <div class="overflow-x-auto rounded-xl border border-gray-200">
+    <table class="w-full text-sm">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-4 py-3 text-left font-semibold text-gray-700 border-b">Komoditas</th>
+          <th class="px-4 py-3 text-center font-semibold text-gray-700 border-b">Satuan</th>
+          <th class="px-4 py-3 text-center font-semibold text-gray-700 border-b">Cideng</th>
+          <th class="px-4 py-3 text-center font-semibold text-gray-700 border-b">Lainnya</th>
+          <th class="px-4 py-3 text-center font-semibold text-gray-700 border-b">Total</th>
+          <th class="px-4 py-3 text-center font-semibold text-gray-700 border-b">Status</th>
+        </tr>
+      </thead>
+      <tbody id="stok-container" class="divide-y divide-gray-100">
+        <!-- Akan dirender oleh JavaScript -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Footer Info -->
+  <div class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-gray-500">
+    <div>
+      Sinkronisasi terakhir: 
+      <span id="stok-last-update" class="font-medium text-gray-700">-</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <span>Auto-refresh: <strong id="stok-auto-refresh-status">Aktif</strong></span>
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input type="checkbox" id="stok-auto-refresh-toggle" checked class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+        <span>Enable</span>
+      </label>
+    </div>
+  </div>
+
+</div>
       
       <!-- TABEL DATA -->
     <div class="overflow-x-auto">
