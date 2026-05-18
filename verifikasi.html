@@ -413,33 +413,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function processScannedURL(url) {
-          console.log("🔗 URL dari QR:", url);
-
-            showPetugasLogin(url); 
-          
-          // Extract ID dari URL
-          try {
-            const urlObj = new URL(url);
-            const id = urlObj.searchParams.get("id");
-            
-            if (id) {
-              console.log("✅ ID ditemukan:", id);
-              currentId = id;
-              fetchData(id); // Load data baru
-            } else {
-              alert("ID tidak ditemukan dalam QR Code");
-            }
-          } catch (e) {
-            // Jika URL relatif (misal: verifikasi.html?id=XXX)
-            const match = url.match(/[?&]id=([^&]+)/);
-            if (match && match[1]) {
-              currentId = match[1];
-              fetchData(match[1]);
-            } else {
-              alert("Format QR Code tidak valid");
-            }
-          }
-        }
+  console.log("🔗 URL dari QR:", url);
+  
+  // 🔐 HANYA simpan URL dan tampilkan modal login
+  // Jangan proses data dulu!
+  showPetugasLogin(url);
+}
         
 // ===============================
 // 🔐 FUNGSI LOGIN PETUGAS
@@ -486,9 +465,9 @@ function verifyPetugasPassword() {
     input.classList.remove('input-error');
     document.getElementById('login-modal').classList.add('hidden');
     
-    // Proses URL yang discan
+    // 🔥 PROSES URL YANG DISCAN SETELAH LOGIN SUKSES
     if (scannedURL) {
-      processScannedURL(scannedURL);
+      processScannedURLReal(scannedURL);  // ← Panggil fungsi real di sini!
       scannedURL = null;
     }
   } else {
@@ -496,7 +475,6 @@ function verifyPetugasPassword() {
     errorMsg.classList.remove('hidden');
     input.classList.add('input-error');
     
-    // Efek shake
     const modal = document.querySelector('#login-modal .bg-white');
     modal.classList.add('shake');
     setTimeout(() => modal.classList.remove('shake'), 300);
@@ -580,6 +558,33 @@ function showToast(msg, type = 'success') {
     toast.style.transform = 'translateX(20px)';
     setTimeout(() => toast.remove(), 300);
   }, 3000);
+}
+
+        // 🔥 FUNGSI INI DIPANGGIL SETELAH PASSWORD BENAR
+function processScannedURLReal(url) {
+  console.log("🔗 URL dari QR (setelah login):", url);
+  
+  try {
+    const urlObj = new URL(url);
+    const id = urlObj.searchParams.get("id");
+    
+    if (id) {
+      console.log("✅ ID ditemukan:", id);
+      currentId = id;
+      fetchData(id); // Load data baru
+    } else {
+      alert("ID tidak ditemukan dalam QR Code");
+    }
+  } catch (e) {
+    // Jika URL relatif (misal: verifikasi.html?id=XXX)
+    const match = url.match(/[?&]id=([^&]+)/);
+    if (match && match[1]) {
+      currentId = match[1];
+      fetchData(match[1]);
+    } else {
+      alert("Format QR Code tidak valid");
+    }
+  }
 }
         
     </script>
