@@ -472,10 +472,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function processScannedURL(url) {
-  console.log("🔗 URL dari QR:", url);
-  
-  // 🔐 HANYA simpan URL dan tampilkan modal login
-  // Jangan proses data dulu!
+  console.log("🔗 [DEBUG] QR Scanned:", url);
+  console.log("🔗 [DEBUG] Memanggil showPetugasLogin...");
   showPetugasLogin(url);
 }
         
@@ -487,7 +485,7 @@ let scannedURL = null; // Simpan URL QR yang discan
 // Tampilkan modal login
 function showPetugasLogin(url) {
   try {
-    console.log("🔐 showPetugasLogin dipanggil");
+    console.log("🔐 [DEBUG] showPetugasLogin dipanggil dengan URL:", url);
     scannedURL = url;
     
     const modal = document.getElementById('login-modal');
