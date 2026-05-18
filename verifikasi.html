@@ -330,24 +330,29 @@
         let isSyncing = false;         
 
         // ==========================================
-        // INISIALISASI
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log("🔍 Full URL:", window.location.href);
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get("id");
-            console.log("🔍 ID extracted:", id);
-            
-            if (!id) {
-                console.error("❌ ID tidak ditemukan!");
-                showError("ID Pendaftaran tidak ditemukan di URL");
-                return;
-            }
-            
-            console.log("✅ ID valid, memulai fetch data...");
-            currentId = id;
-            fetchData(id);
-        });
+// INISIALISASI
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    // 🔄 RESET SEMUA FLAG SAAT HALAMAN LOAD
+    optimisticApproved = false;
+    isSyncing = false;
+    isApproved = false;
+    
+    console.log("🔍 Full URL:", window.location.href);
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get("id");
+    console.log("🔍 ID extracted:", id);
+    
+    if (!id) {
+        console.error("❌ ID tidak ditemukan!");
+        showError("ID Pendaftaran tidak ditemukan di URL");
+        return;
+    }
+    
+    console.log("✅ ID valid, memulai fetch data...");
+    currentId = id;
+    fetchData(id);
+});
         
         // ==========================================
         // AMBIL DATA DARI SERVER
