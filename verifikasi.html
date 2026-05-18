@@ -382,12 +382,17 @@
             }
         }
 
-        // ==========================================
+        // ==========
         // RENDER UI
-        // ==========================================
+        // ==========
         function renderData(data) {
+             if (optimisticApproved && isSyncing) {
+        console.log("⏳ Skipping render - masih dalam mode optimistic");
+        return;
+    }
             document.getElementById('loading-state').classList.add('hidden');
             document.getElementById('content-state').classList.remove('hidden');
+            document.getElementById('error-state').classList.add('hidden');
 
             document.getElementById('detail-waktu').textContent = data.waktu || "-";
             document.getElementById('detail-id').textContent = data.id || "-";
@@ -404,7 +409,7 @@
             const btnApprove = document.getElementById('btn-approve');
             const actionButtons = document.getElementById('action-buttons');
 
-            if (status === "Disetujui" || isApproved) {
+            if (optimisticApproved || status === "Disetujui") {
                 // ✨ TAMPILAN DATA VALID
                 statusText.textContent = "DATA VALID";
                 statusText.className = "text-xl font-bold text-emerald-600 uppercase tracking-wide transition-colors duration-300";
@@ -428,10 +433,13 @@
                 
                 // Trigger confetti hanya jika baru pertama kali approved
                 if (!isApproved) {
-                    triggerConfetti();
-                }
+            triggerConfetti();
+            isApproved = true;
+        }
+                
             } else {
                 // ✨ TAMPILAN MENUNGGU VERIFIKASI
+                optimisticApproved = false;
                 statusText.textContent = "MENUNGGU VERIFIKASI";
                 statusText.className = "text-lg font-bold text-amber-500 uppercase tracking-wide transition-colors duration-300";
                 
