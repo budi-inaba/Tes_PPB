@@ -613,10 +613,17 @@
 }
         
         function showError(msg) {
-            document.getElementById('loading-state').classList.add('hidden');
-            document.getElementById('error-state').classList.remove('hidden');
-            document.getElementById('error-msg').textContent = msg;
-        }
+    // ✨ Jangan tampilkan error jika dalam mode optimistic approved
+    if (optimisticApproved) {
+        console.log("⚠️ Error ignored - dalam mode optimistic:", msg);
+        return;
+    }
+    
+    document.getElementById('loading-state').classList.add('hidden');
+    document.getElementById('content-state').classList.add('hidden'); // ✨ Hide content
+    document.getElementById('error-state').classList.remove('hidden');
+    document.getElementById('error-msg').textContent = msg;
+}
 
         function triggerConfetti() {
             confetti({ 
