@@ -428,6 +428,7 @@ let scannedURL = null; // Simpan URL QR yang discan
 
 // Tampilkan modal login
 function showPetugasLogin(url) {
+  console.log("🔐 showPetugasLogin dipanggil dengan URL:", url); // ← DEBUG LOG
   scannedURL = url;
   document.getElementById('login-modal').classList.remove('hidden');
   document.getElementById('petugas-password').value = '';
