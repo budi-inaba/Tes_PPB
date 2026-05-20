@@ -336,7 +336,7 @@ async function loadStokKomoditas() {
 // ===============================
 function renderStokDashboard(stokData) {
   const container = document.getElementById("stok-container");
-  const summary = document.getElementById("stok-summary");
+  const summary   = document.getElementById("stok-summary");
   
   if (!container || !summary) {
     console.error('❌ Elemen stok tidak ditemukan di DOM');
@@ -346,35 +346,94 @@ function renderStokDashboard(stokData) {
   container.innerHTML = "";
   summary.innerHTML = "";
   
+  // Validasi data kosong
   if (!stokData || Object.keys(stokData).length === 0) {
-    container.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-center text-gray-400"><i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-50"></i><p>Tidak ada data komoditas</p></td></tr>`;
-    summary.innerHTML = `<div class="col-span-2 md:col-span-4 text-center py-4 text-gray-400 text-sm">Tidak ada data untuk ditampilkan</div>`;
+    container.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Tidak ada data komoditas</td></tr>`;
+    summary.innerHTML = `<div class="col-span-2 md:col-span-6 text-center py-4 text-gray-400 text-sm">Tidak ada data untuk ditampilkan</div>`;
     lucide.createIcons();
     return;
   }
   
-  let stats = { totalKomoditas: 0, totalCideng: 0, totalLainnya: 0, stokAman: 0, stokMenipis: 0, stokHabis: 0 };
-  const rows = [];
+  // Icon mapping untuk setiap komoditas
+  const iconMap = {
+    'Ayam': 'drumstick',
+    'Daging Sapi': 'beef',
+    'Telur': 'egg',
+    'Beras': 'package',
+    'Ikan Kembung': 'fish',
+    'Susu UHT': 'milk'
+  };
+
+  let cardsHTML = '';
   
+  Object.entries(stokData).forEach(([nama, data]) => {
+    const cideng  = Number(data.cideng) || 0;
+    const lainnya = Number(data.lainnya) || 0;
+    const total   = cideng + lainnya;
+    
+    const icon = iconMap[nama] || 'package';
+    
+    // Logika warna: jika 0 → merah, jika >0 → warna asli
+    const cidengClass  = cideng === 0 ? 'text-red-600 font-bold' : 'text-blue-700';
+    const lainnyaClass = lainnya === 0 ? 'text-red-600 font-bold' : 'text-green-700';
+    const totalClass   = total === 0 ? 'text-red-600' : 'text-gray-800';
+    const totalLabel   = total === 0 ? 'Stok Habis' : 'Total Stok';
+    
+    cardsHTML += `
+      <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all flex flex-col">
+        <!-- Header: Ikon + Nama -->
+        <div class="flex items-center gap-2 mb-3">
+          <div class="bg-blue-50 p-2 rounded-lg flex-shrink-0">
+            <i data-lucide="${icon}" class="w-5 h-5 text-blue-600"></i>
+          </div>
+          <h4 class="font-bold text-gray-800 text-sm truncate" title="${nama}">${nama}</h4>
+        </div>
+        
+        <!-- Stok Details -->
+        <div class="space-y-2 mb-3 flex-grow">
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-gray-500">Cideng</span>
+            <span class="${cidengClass} bg-blue-50 px-2 py-0.5 rounded-md">${cideng}</span>
+          </div>
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-gray-500">Lainnya</span>
+            <span class="${lainnyaClass} bg-green-50 px-2 py-0.5 rounded-md">${lainnya}</span>
+          </div>
+        </div>
+
+        <!-- Total Footer -->
+        <div class="pt-2 border-t border-gray-100 mt-auto text-center">
+          <p class="text-[10px] text-gray-400 uppercase tracking-wide font-medium">${totalLabel}</p>
+          <p class="text-2xl font-extrabold ${totalClass} leading-tight mt-1">${total}</p>
+        </div>
+      </div>
+    `;
+  });
+  
+  summary.innerHTML = cardsHTML;
+  container.innerHTML = generateTableRows(stokData);
+  
+  // Update timestamp
+  document.getElementById("stok-last-update").textContent = 
+    new Date().toLocaleTimeString("id-ID", { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  
+  lucide.createIcons();
+}
+
+// Helper untuk render tabel (dipisah agar fungsi utama rapi)
+function generateTableRows(stokData) {
+  let rows = '';
   Object.entries(stokData).forEach(([nama, data]) => {
     const cideng = Number(data.cideng) || 0;
     const lainnya = Number(data.lainnya) || 0;
     const total = cideng + lainnya;
-    
-    stats.totalKomoditas++;
-    stats.totalCideng += cideng;
-    stats.totalLainnya += lainnya;
-    
-    if (total === 0) stats.stokHabis++;
-    else if (total <= 10) stats.stokMenipis++;
-    else stats.stokAman++;
     
     let status, badgeClass;
     if (total === 0) { status = "Habis"; badgeClass = "bg-red-100 text-red-700"; }
     else if (total <= 10) { status = "Menipis"; badgeClass = "bg-yellow-100 text-yellow-700"; }
     else { status = "Aman"; badgeClass = "bg-green-100 text-green-700"; }
     
-    rows.push(`
+    rows += `
       <tr class="hover:bg-gray-50 transition">
         <td class="px-4 py-3 font-medium text-gray-800">${nama}</td>
         <td class="px-4 py-3 text-center text-gray-500">${data.satuan || '-'}</td>
@@ -383,22 +442,11 @@ function renderStokDashboard(stokData) {
         <td class="px-4 py-3 text-center font-bold text-gray-800">${total}</td>
         <td class="px-4 py-3 text-center"><span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${badgeClass}">${status}</span></td>
       </tr>
-    `);
+    `;
   });
-  
-  container.innerHTML = rows.join('');
-  
-  summary.innerHTML = `
-    <div class="bg-white border rounded-xl p-4 shadow-sm"><p class="text-xs text-gray-500 mb-1">Total Komoditas</p><p class="text-2xl font-bold text-blue-600">${stats.totalKomoditas}</p></div>
-    <div class="bg-white border rounded-xl p-4 shadow-sm"><p class="text-xs text-gray-500 mb-1">Stok Cideng</p><p class="text-2xl font-bold text-green-600">${stats.totalCideng}</p></div>
-    <div class="bg-white border rounded-xl p-4 shadow-sm"><p class="text-xs text-gray-500 mb-1">Stok Lainnya</p><p class="text-2xl font-bold text-purple-600">${stats.totalLainnya}</p></div>
-    <div class="bg-white border rounded-xl p-4 shadow-sm"><p class="text-xs text-gray-500 mb-1">Perlu Perhatian</p><p class="text-2xl font-bold ${stats.stokHabis > 0 ? 'text-red-600' : 'text-orange-600'}">${stats.stokMenipis + stats.stokHabis}</p></div>
-  `;
-  
-  document.getElementById("stok-last-update").textContent = new Date().toLocaleTimeString("id-ID", { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  lucide.createIcons();
+  return rows;
 }
-
+        
 // ===============================
 // 🎨 UPDATE UI STATE
 // ===============================
@@ -871,7 +919,7 @@ function initStokMonitoring() {
   </div>
 
   <!-- Summary Cards -->
-  <div id="stok-summary" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+  <div id="stok-summary" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-6">
     <!-- Dirender oleh JavaScript -->
   </div>
 
