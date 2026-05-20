@@ -1968,6 +1968,76 @@ rt
 
 }, 100);
 }
+
+// ===============================
+// MODAL EDIT STOK KOMODITAS
+// ===============================
+function openEditStokModal(id, nama, cideng, lainnya) {
+  document.getElementById('modal-stok-id').value = id;
+  document.getElementById('modal-nama-asli').value = nama;
+  document.getElementById('modal-nama-komoditas').textContent = nama;
+  document.getElementById('modal-stok-cideng').value = cideng;
+  document.getElementById('modal-stok-lainnya').value = lainnya;
+  
+  const modal = document.getElementById('edit-stok-modal');
+  modal.classList.remove('hidden');
+  lucide.createIcons();
+  
+  setTimeout(() => document.getElementById('modal-stok-cideng').focus(), 100);
+}
+
+function closeEditStokModal() {
+  const modal = document.getElementById('edit-stok-modal');
+  modal.classList.add('hidden');
+}
+
+async function saveEditStok() {
+  const btn = document.getElementById('btn-save-stok');
+  const originalText = btn.innerHTML;
+  
+  btn.disabled = true;
+  btn.innerHTML = `<i data-lucide="loader-2" class="animate-spin w-4 h-4"></i> Menyimpan...`;
+  lucide.createIcons();
+
+  const payload = {
+    id: document.getElementById('modal-stok-id').value,
+    stok_cideng: Number(document.getElementById('modal-stok-cideng').value) || 0,
+    stok_lainnya: Number(document.getElementById('modal-stok-lainnya').value) || 0
+  };
+
+  try {
+    const res = await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "updateStok", ...payload })
+    });
+    const result = await res.json();
+
+    if (result.success) {
+      showToast("✅ Stok berhasil diperbarui", "success");
+      closeEditStokModal();
+      loadStokKomoditas();
+    } else {
+      showToast("❌ " + (result.message || "Gagal memperbarui stok"), "error");
+    }
+  } catch (err) {
+    console.error(err);
+    showToast("❌ Gagal koneksi ke server", "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+    lucide.createIcons();
+  }
+}
+
+// Tutup modal jika klik di luar area panel
+document.addEventListener('DOMContentLoaded', function() {
+  const modal = document.getElementById('edit-stok-modal');
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === this) closeEditStokModal();
+    });
+  }
+});
         
     </script>
 
