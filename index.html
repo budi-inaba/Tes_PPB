@@ -2086,6 +2086,33 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+// ===============================
+// UPDATE HEADER DATE & TIME
+// ===============================
+function updateHeaderDateTime() {
+  const now = new Date();
+  const wib = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
+  
+  const optionsTanggal = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const optionsJam = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+  
+  const tanggalEl = document.getElementById('header-tanggal');
+  const jamEl = document.getElementById('header-jam');
+  
+  if (tanggalEl) {
+    tanggalEl.textContent = wib.toLocaleDateString('id-ID', optionsTanggal);
+  }
+  if (jamEl) {
+    jamEl.textContent = wib.toLocaleTimeString('id-ID', optionsJam) + ' WIB';
+  }
+}
+
+// Update setiap detik & saat load
+document.addEventListener('DOMContentLoaded', () => {
+  updateHeaderDateTime();
+  setInterval(updateHeaderDateTime, 1000);
+});
         
     </script>
 
