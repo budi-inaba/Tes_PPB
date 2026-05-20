@@ -993,7 +993,7 @@ document.getElementById('input-atm').addEventListener('input', debounce(cekATM, 
 
 // realtime saat user mengetik
 document.getElementById('input-kelurahan')
-  .addEventListener('input', debounce(loadStokKomoditas, 300));
+  .addEventListener('input', debounce(loadStokKomoditasForForm, 300));
 
 });
 
@@ -1001,7 +1001,7 @@ document.getElementById('input-kelurahan')
 /* =================================
    CEK STOK KOMODITAS
 ================================= */
-async function loadStokKomoditas() {
+async function loadStokKomoditasForForm() {
   // ==============================
   // 🔥 RESET UI DULU (PENTING)
   // ==============================
