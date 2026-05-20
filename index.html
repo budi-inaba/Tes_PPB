@@ -1289,9 +1289,8 @@ katSelect.addEventListener('change', function(e){
     views[viewName].classList.remove('hidden-view');
     window.scrollTo(0,0);
     
-    // 🔄 Kelola auto-refresh stok berdasarkan view
     if (viewName === 'admin') {
-        initStokMonitoring();
+        setTimeout(() => initStokMonitoring(), 100);
     } else {
         stopStokAutoRefresh();
     }
