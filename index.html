@@ -287,8 +287,6 @@
 // 🔧 KONFIGURASI MONITORING STOK
 // ===============================
 const STOK_CONFIG = {
-  autoRefreshInterval: 3000,  // 3 detik
-  autoRefreshEnabled: true,
   connectionTimeout: 10000    // 10 detik timeout
 };
 
@@ -430,42 +428,13 @@ function updateStokUI(state, errorMessage = '') {
 }
 
 // ===============================
-// ⏱️ AUTO REFRESH CONTROLLER
-// ===============================
-function startStokAutoRefresh() {
-  if (stokRefreshTimer) clearInterval(stokRefreshTimer);
-  stokRefreshTimer = setInterval(() => {
-    if (STOK_CONFIG.autoRefreshEnabled && currentView === 'admin') {
-      loadStokKomoditas();
-    }
-  }, STOK_CONFIG.autoRefreshInterval);
-}
-
-function stopStokAutoRefresh() {
-  if (stokRefreshTimer) {
-    clearInterval(stokRefreshTimer);
-    stokRefreshTimer = null;
-  }
-}
-
-function toggleStokAutoRefresh(enabled) {
-  STOK_CONFIG.autoRefreshEnabled = enabled;
-  const statusEl = document.getElementById('stok-auto-refresh-status');
-  if (statusEl) statusEl.textContent = enabled ? 'Aktif' : 'Nonaktif';
-  if (enabled && currentView === 'admin') loadStokKomoditas();
-}
-
-// ===============================
 // 🚀 INITIALIZATION
 // ===============================
 function initStokMonitoring() {
-  const toggleEl = document.getElementById('stok-auto-refresh-toggle');
-  if (toggleEl) {
-    toggleEl.addEventListener('change', (e) => toggleStokAutoRefresh(e.target.checked));
-  }
+  // Hanya load data saat masuk halaman admin
   loadStokKomoditas();
-  startStokAutoRefresh();
 }
+        
         // Database lokal sederhana untuk simulasi pengecekan duplikat Kartu Keluarga
         function handleImgError(img) {
             const container = img.parentElement;
@@ -924,19 +893,10 @@ function initStokMonitoring() {
   </div>
 
   <!-- Footer Info -->
-  <div class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-gray-500">
-    <div>
-      Sinkronisasi terakhir: 
-      <span id="stok-last-update" class="font-medium text-gray-700">-</span>
-    </div>
-    <div class="flex items-center gap-4">
-      <span>Auto-refresh: <strong id="stok-auto-refresh-status">Aktif</strong></span>
-      <label class="flex items-center gap-2 cursor-pointer">
-        <input type="checkbox" id="stok-auto-refresh-toggle" checked class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-        <span>Enable</span>
-      </label>
-    </div>
-  </div>
+<div class="mt-4 text-xs text-gray-500">
+  Sinkronisasi terakhir: 
+  <span id="stok-last-update" class="font-medium text-gray-700">-</span>
+</div>
 
 </div>
       
@@ -1289,10 +1249,9 @@ katSelect.addEventListener('change', function(e){
     views[viewName].classList.remove('hidden-view');
     window.scrollTo(0,0);
     
+    // 🔄 Init monitoring stok hanya saat masuk admin
     if (viewName === 'admin') {
         setTimeout(() => initStokMonitoring(), 100);
-    } else {
-        stopStokAutoRefresh();
     }
 }
 // ==========================
