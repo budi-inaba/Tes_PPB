@@ -816,7 +816,7 @@ function initStokMonitoring() {
 </div>
 
  <!-- CARD STOK -->
-    <!-- ===============================
+<!-- ===============================
      MONITORING STOK KOMODITAS
      =============================== -->
 <div class="mb-8 p-5 border rounded-2xl bg-gradient-to-br from-gray-50 to-white shadow-sm">
@@ -829,20 +829,16 @@ function initStokMonitoring() {
         Monitoring Stok Komoditas
       </h3>
       <p class="text-sm text-gray-500 mt-1">
-        Terintegrasi dengan Google Sheet • Update Real-Time
+        Terintegrasi dengan Google Sheet • Gunakan tombol <strong>Refresh</strong> di pojok kanan atas untuk memperbarui data
       </p>
     </div>
     
-    <div class="flex items-center gap-2">
+    <!-- Status Indicator Only (Tombol Refresh Dihapus) -->
+    <div class="flex items-center justify-center md:justify-end">
       <span id="stok-connection-status" class="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 rounded-full text-xs font-medium text-gray-600">
         <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
-        Connecting...
+        Menunggu Data...
       </span>
-      <button onclick="loadStokKomoditas()" 
-              class="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition shadow-sm">
-        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-        Refresh
-      </button>
     </div>
   </div>
 
@@ -860,10 +856,7 @@ function initStokMonitoring() {
       <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
       <div>
         <p class="font-semibold">Gagal memuat data stok</p>
-        <p id="stok-error-message" class="mt-1 opacity-90">Silakan periksa koneksi atau coba refresh.</p>
-        <button onclick="loadStokKomoditas()" class="mt-3 text-xs font-medium underline hover:text-red-900">
-          Coba Lagi
-        </button>
+        <p id="stok-error-message" class="mt-1 opacity-90">Silakan periksa koneksi internet atau klik tombol Refresh di atas.</p>
       </div>
     </div>
   </div>
@@ -893,10 +886,10 @@ function initStokMonitoring() {
   </div>
 
   <!-- Footer Info -->
-<div class="mt-4 text-xs text-gray-500">
-  Sinkronisasi terakhir: 
-  <span id="stok-last-update" class="font-medium text-gray-700">-</span>
-</div>
+  <div class="mt-4 text-xs text-gray-500">
+    Sinkronisasi terakhir: 
+    <span id="stok-last-update" class="font-medium text-gray-700">-</span>
+  </div>
 
 </div>
       
