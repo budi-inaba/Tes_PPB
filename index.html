@@ -2094,7 +2094,13 @@ function updateHeaderDateTime() {
   const now = new Date();
   const wib = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
   
-  const optionsTanggal = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const optionsTanggal = { 
+  weekday: 'long', 
+  year: 'numeric', 
+  month: 'long', 
+  day: 'numeric',
+  timeZone: 'Asia/Jakarta'
+};
   const optionsJam = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
   
   const tanggalEl = document.getElementById('header-tanggal');
