@@ -191,6 +191,37 @@
     z-index: 10;
   }
 }
+
+ /* ===============================
+   HEADER DASHBOARD - POLISH
+   =============================== */
+/* Animasi subtle untuk badge tanggal/jam */
+#header-tanggal,
+#header-jam {
+  transition: opacity 0.2s ease;
+}
+
+/* Ensure mono font for time looks crisp */
+#header-jam {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.5px;
+}
+
+/* Responsive: Stack rapi di mobile */
+@media (max-width: 1280px) {
+  #view-admin .flex-col.xl\:flex-row {
+    gap: 1.25rem !important;
+  }
+}
+
+/* Hover effect untuk badge */
+.inline-flex.items-center.gap-1\.5.px-2\.5.py-1.bg-white {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.inline-flex.items-center.gap-1\.5.px-2\.5.py-1.bg-white:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}       
         
     </style>
 </head>
