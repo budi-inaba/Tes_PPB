@@ -1254,6 +1254,36 @@ inputATM.addEventListener('input', function(e) {
   e.target.value = formatted;
 
 });
+
+        const KELURAHAN_GAMBIR = [
+              'gambir',
+              'cideng',
+              'petojo utara',
+              'petojo selatan',
+              'kebon kelapa',
+              'duri pulo'
+        ];
+
+function cekKelurahan() {
+  const input = document.getElementById('input-kelurahan');
+  const error = document.getElementById('error-kelurahan');
+  const val = input.value.trim().toLowerCase();
+  
+  if (val === '') {
+    error.classList.add('hidden');
+    input.classList.remove('input-error');
+    return;
+  }
+
+  if (!KELURAHAN_GAMBIR.includes(val)) {
+    error.textContent = "Kelurahan harus berada di wilayah Kecamatan Gambir";
+    error.classList.remove('hidden');
+    input.classList.add('input-error');
+  } else {
+    error.classList.add('hidden');
+    input.classList.remove('input-error');
+  }
+}
             
 async function cekKK() {
 
