@@ -1110,12 +1110,14 @@ document.getElementById('input-kk').addEventListener('input', debounce(cekKK, 60
 document.getElementById('input-ktp').addEventListener('input', debounce(cekKTP, 600));
 document.getElementById('input-atm').addEventListener('input', debounce(cekATM, 600));
 
-// realtime saat user mengetik
-document.getElementById('input-kelurahan')
-  .addEventListener('input', debounce(loadStokKomoditasForForm, 300));
+        // realtime saat user mengetik
+        document.getElementById('input-kelurahan')
+          .addEventListener('input', debounce(function() {
+            cekKelurahan(); // Panggil validasi kelurahan
+            loadStokKomoditasForForm();
+            }, 300));
 
-});
-
+        }); // <-- Penutup DOMContentLoaded
 
 /* =================================
    CEK STOK KOMODITAS
