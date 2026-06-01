@@ -1510,9 +1510,10 @@ function resetBtnLogin() {
 if (
   document.getElementById('error-kk').classList.contains('hidden') === false ||
   document.getElementById('error-ktp').classList.contains('hidden') === false ||
-  document.getElementById('error-atm').classList.contains('hidden') === false
+  document.getElementById('error-atm').classList.contains('hidden') === false ||
+  document.getElementById('error-kelurahan').classList.contains('hidden') === false
 ) {
-  showToast('Data sudah terdaftar (KK / KTP / ATM)', 'error');
+  showToast('Data sudah terdaftar atau Kelurahan tidak valid', 'error');
   return;
 }
     const checkedKomoditas = [...document.querySelectorAll('input[name="komoditas"]:checked')]
