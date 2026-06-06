@@ -1317,16 +1317,17 @@ async function cekKK() {
   }
 
   try {
-    // Tambahkan cache: 'no-store' untuk menghindari cache browser
     const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=cekKKLengkap&kk=${kk}`, { cache: 'no-store' });
     
-    // Validasi apakah response benar-benar JSON (bukan HTML error dari Apps Script)
     const contentType = res.headers.get("content-type");
     if (!contentType || !contentType.includes("application/json")) {
-      throw new Error("Response bukan JSON. Kemungkinan Apps Script error (cek console Apps Script).");
+      throw new Error("Response bukan JSON. Pastikan sheet MASTER_KK ada di Spreadsheet.");
     }
 
-    const data = await res.json();
+    const result = await res.json();
+    
+    // 🔥 PERBAIKAN UTAMA: Ambil properti 'data' dari result
+    const data = result.data; 
 
     if (data.duplikat) {
       error.querySelector('span').textContent = "No. Kartu Keluarga sudah terdaftar";
@@ -1353,7 +1354,10 @@ async function cekKK() {
 
   } catch (err) {
     console.error('❌ Error cekKK:', err);
-    // Jika ingin menampilkan pesan error jaringan di UI, bisa tambahkan logika di sini
+    // Tampilkan pesan error di UI jika Apps Script crash
+    error.querySelector('span').textContent = "Gagal mengecek KK. Periksa koneksi atau sheet MASTER_KK.";
+    error.classList.remove('hidden');
+    inputKK.classList.add('input-error');
   }
 }
         
@@ -1376,7 +1380,10 @@ async function cekKTP() {
       throw new Error("Response bukan JSON.");
     }
 
-    const data = await res.json();
+    const result = await res.json();
+    
+    // 🔥 PERBAIKAN UTAMA: Ambil properti 'data' dari result
+    const data = result.data;
 
     if (data.terdaftar) {
       error.querySelector('span').textContent = "No. KTP sudah terdaftar";
@@ -1410,7 +1417,10 @@ async function cekKTP() {
       throw new Error("Response bukan JSON.");
     }
 
-    const data = await res.json();
+    const result = await res.json();
+    
+    // 🔥 PERBAIKAN UTAMA: Ambil properti 'data' dari result
+    const data = result.data;
 
     if (data.terdaftar) {
       error.querySelector('span').textContent = "No. Kartu ATM sudah terdaftar";
