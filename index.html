@@ -1348,18 +1348,22 @@ async function cekKK() {
 }
         
 async function cekKTP() {
-
   const ktp = document.getElementById('input-ktp').value.trim();
+  const input = document.getElementById('input-ktp');
+  const error = document.getElementById('error-ktp');
 
-  if (ktp.length !== 16) return;
+  // Sembunyikan error jika panjang belum 16
+  if (ktp.length !== 16) {
+    error.classList.add('hidden');
+    input.classList.remove('input-error');
+    return;
+  }
 
   const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=cekKTP&ktp=${ktp}`);
   const data = await res.json();
 
-  const input = document.getElementById('input-ktp');
-  const error = document.getElementById('error-ktp');
-
   if (data.terdaftar) {
+    error.querySelector('span').textContent = "No. KTP sudah terdaftar";
     error.classList.remove('hidden');
     input.classList.add('input-error');
   } else {
@@ -1368,21 +1372,23 @@ async function cekKTP() {
   }
 }
             
-          async function cekATM() {
+        async function cekATM() {
+  const atm = document.getElementById('input-atm').value.replace(/\s/g,'');
+  const input = document.getElementById('input-atm');
+  const error = document.getElementById('error-atm');
 
-  const atm = document
-    .getElementById('input-atm')
-    .value.replace(/\s/g,'');
-
-  if (atm.length !== 16 && atm.length !== 18) return;
+  // Sembunyikan error jika panjang belum 16 atau 18
+  if (atm.length !== 16 && atm.length !== 18) {
+    error.classList.add('hidden');
+    input.classList.remove('input-error');
+    return;
+  }
 
   const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=cekATM&atm=${atm}`);
   const data = await res.json();
 
-  const input = document.getElementById('input-atm');
-  const error = document.getElementById('error-atm');
-
   if (data.terdaftar) {
+    error.querySelector('span').textContent = "No. Kartu ATM sudah terdaftar";
     error.classList.remove('hidden');
     input.classList.add('input-error');
   } else {
