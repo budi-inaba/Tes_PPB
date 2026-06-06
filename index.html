@@ -1303,14 +1303,15 @@ function cekKelurahan() {
 }
             
 async function cekKK() {
-
   const kk = document.getElementById('input-kk').value.trim();
-
   const inputKK = document.getElementById('input-kk');
   const inputKelurahan = document.getElementById('input-kelurahan');
   const error = document.getElementById('error-kk');
 
+  // Sembunyikan error jika panjang belum 16
   if (kk.length !== 16) {
+    error.classList.add('hidden');
+    inputKK.classList.remove('input-error');
     inputKelurahan.removeAttribute("readonly");
     inputKelurahan.placeholder = "Contoh : Petojo Utara";
     return;
@@ -1319,40 +1320,33 @@ async function cekKK() {
   const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=cekKKLengkap&kk=${kk}`);
   const data = await res.json();
 
-  // ❌ CEK DUPLIKAT DULU (PRIORITAS)
+  // Cek Duplikat
   if (data.duplikat) {
-    error.textContent = "KK sudah pernah digunakan untuk pendaftaran";
+    error.querySelector('span').textContent = "No. Kartu Keluarga sudah terdaftar";
     error.classList.remove('hidden');
     inputKK.classList.add('input-error');
     return;
   }
 
-  // ❌ TIDAK ADA DI MASTER
-if (!data.ditemukan) {
-
-  // buka input manual
-  inputKelurahan.removeAttribute("readonly");
-
-  // optional placeholder
-  inputKelurahan.placeholder = "Isi kelurahan sesuai KK";
-
-  // 🔥 PENTING: HILANGKAN ERROR
-  error.classList.add('hidden');
-  inputKK.classList.remove('input-error');
+  // Jika tidak ditemukan di master
+  if (!data.ditemukan) {
+    inputKelurahan.removeAttribute("readonly");
+    inputKelurahan.placeholder = "Isi kelurahan sesuai KK";
+    error.classList.add('hidden');
+    inputKK.classList.remove('input-error');
     cekKelurahan();
-  return;
-}
+    return;
+  }
 
-  // ✅ DITEMUKAN DI MASTER
+  // Jika ditemukan di master
   inputKelurahan.value = data.kelurahan;
   inputKelurahan.setAttribute("readonly", true);
   inputKelurahan.placeholder = "Kelurahan sesuai database";
-
   error.classList.add('hidden');
   inputKK.classList.remove('input-error');
-    cekKelurahan();
+  cekKelurahan();
 }
-            
+        
 async function cekKTP() {
 
   const ktp = document.getElementById('input-ktp').value.trim();
