@@ -1308,7 +1308,6 @@ async function cekKK() {
   const inputKelurahan = document.getElementById('input-kelurahan');
   const error = document.getElementById('error-kk');
 
-  // Sembunyikan error jika panjang belum 16
   if (kk.length !== 16) {
     error.classList.add('hidden');
     inputKK.classList.remove('input-error');
@@ -1317,34 +1316,45 @@ async function cekKK() {
     return;
   }
 
-  const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=cekKKLengkap&kk=${kk}`);
-  const data = await res.json();
+  try {
+    // Tambahkan cache: 'no-store' untuk menghindari cache browser
+    const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=cekKKLengkap&kk=${kk}`, { cache: 'no-store' });
+    
+    // Validasi apakah response benar-benar JSON (bukan HTML error dari Apps Script)
+    const contentType = res.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      throw new Error("Response bukan JSON. Kemungkinan Apps Script error (cek console Apps Script).");
+    }
 
-  // Cek Duplikat
-  if (data.duplikat) {
-    error.querySelector('span').textContent = "No. Kartu Keluarga sudah terdaftar";
-    error.classList.remove('hidden');
-    inputKK.classList.add('input-error');
-    return;
-  }
+    const data = await res.json();
 
-  // Jika tidak ditemukan di master
-  if (!data.ditemukan) {
-    inputKelurahan.removeAttribute("readonly");
-    inputKelurahan.placeholder = "Isi kelurahan sesuai KK";
+    if (data.duplikat) {
+      error.querySelector('span').textContent = "No. Kartu Keluarga sudah terdaftar";
+      error.classList.remove('hidden');
+      inputKK.classList.add('input-error');
+      return;
+    }
+
+    if (!data.ditemukan) {
+      inputKelurahan.removeAttribute("readonly");
+      inputKelurahan.placeholder = "Isi kelurahan sesuai KK";
+      error.classList.add('hidden');
+      inputKK.classList.remove('input-error');
+      cekKelurahan();
+      return;
+    }
+
+    inputKelurahan.value = data.kelurahan;
+    inputKelurahan.setAttribute("readonly", true);
+    inputKelurahan.placeholder = "Kelurahan sesuai database";
     error.classList.add('hidden');
     inputKK.classList.remove('input-error');
     cekKelurahan();
-    return;
-  }
 
-  // Jika ditemukan di master
-  inputKelurahan.value = data.kelurahan;
-  inputKelurahan.setAttribute("readonly", true);
-  inputKelurahan.placeholder = "Kelurahan sesuai database";
-  error.classList.add('hidden');
-  inputKK.classList.remove('input-error');
-  cekKelurahan();
+  } catch (err) {
+    console.error('❌ Error cekKK:', err);
+    // Jika ingin menampilkan pesan error jaringan di UI, bisa tambahkan logika di sini
+  }
 }
         
 async function cekKTP() {
@@ -1352,23 +1362,32 @@ async function cekKTP() {
   const input = document.getElementById('input-ktp');
   const error = document.getElementById('error-ktp');
 
-  // Sembunyikan error jika panjang belum 16
   if (ktp.length !== 16) {
     error.classList.add('hidden');
     input.classList.remove('input-error');
     return;
   }
 
-  const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=cekKTP&ktp=${ktp}`);
-  const data = await res.json();
+  try {
+    const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=cekKTP&ktp=${ktp}`, { cache: 'no-store' });
+    
+    const contentType = res.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      throw new Error("Response bukan JSON.");
+    }
 
-  if (data.terdaftar) {
-    error.querySelector('span').textContent = "No. KTP sudah terdaftar";
-    error.classList.remove('hidden');
-    input.classList.add('input-error');
-  } else {
-    error.classList.add('hidden');
-    input.classList.remove('input-error');
+    const data = await res.json();
+
+    if (data.terdaftar) {
+      error.querySelector('span').textContent = "No. KTP sudah terdaftar";
+      error.classList.remove('hidden');
+      input.classList.add('input-error');
+    } else {
+      error.classList.add('hidden');
+      input.classList.remove('input-error');
+    }
+  } catch (err) {
+    console.error('❌ Error cekKTP:', err);
   }
 }
             
@@ -1377,23 +1396,32 @@ async function cekKTP() {
   const input = document.getElementById('input-atm');
   const error = document.getElementById('error-atm');
 
-  // Sembunyikan error jika panjang belum 16 atau 18
   if (atm.length !== 16 && atm.length !== 18) {
     error.classList.add('hidden');
     input.classList.remove('input-error');
     return;
   }
 
-  const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=cekATM&atm=${atm}`);
-  const data = await res.json();
+  try {
+    const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=cekATM&atm=${atm}`, { cache: 'no-store' });
+    
+    const contentType = res.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      throw new Error("Response bukan JSON.");
+    }
 
-  if (data.terdaftar) {
-    error.querySelector('span').textContent = "No. Kartu ATM sudah terdaftar";
-    error.classList.remove('hidden');
-    input.classList.add('input-error');
-  } else {
-    error.classList.add('hidden');
-    input.classList.remove('input-error');
+    const data = await res.json();
+
+    if (data.terdaftar) {
+      error.querySelector('span').textContent = "No. Kartu ATM sudah terdaftar";
+      error.classList.remove('hidden');
+      input.classList.add('input-error');
+    } else {
+      error.classList.add('hidden');
+      input.classList.remove('input-error');
+    }
+  } catch (err) {
+    console.error('❌ Error cekATM:', err);
   }
 }
   
